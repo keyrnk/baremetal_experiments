@@ -1,8 +1,10 @@
 # The ARM toolchain prefix
-ARMGNU = ~/opt/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi
+#ARMGNU = /home/user/opt/gcc-arm-none-eabi-6-2017-q2-update/bin/arm-none-eabi
+ARMGNU = /home/user/opt/cross-compiler-aarch64/bin/aarch64-elf
 
 
-COPS = -mthumb -Wall -O2 -nostdlib -nostartfiles -ffreestanding
+#COPS = -mthumb -Wall -O2 -nostdlib -nostartfiles -ffreestanding
+COPS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
 
 # Directory to put the intermediate build files
 BUILD = build/
@@ -14,7 +16,7 @@ SOURCE = src/
 TARGET_NAME = kernel
 
 # Name of the file to output
-TARGET = kernel.img
+TARGET = kernel8.img
 
 # Name of the listing file to output
 LIST = kernel.list
