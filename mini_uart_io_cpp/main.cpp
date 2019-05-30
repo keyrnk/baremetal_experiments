@@ -115,7 +115,7 @@ void PutStr(const char* s)
 	}
 }
 
-void main()
+int main()
 {
 	InitMiniUart();
 
@@ -124,4 +124,6 @@ void main()
 	{
 		PutChar(GetChar());
 	}
+
+	return 0;
 }

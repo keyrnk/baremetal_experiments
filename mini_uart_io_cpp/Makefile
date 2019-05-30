@@ -1,5 +1,5 @@
-SRCS = $(wildcard *.c)
-OBJS = $(SRCS:.c=.o)
+SRCS = $(wildcard *.cpp)
+OBJS = $(SRCS:.cpp=.o)
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib
 
 all: clean kernel8.img
@@ -7,7 +7,7 @@ all: clean kernel8.img
 start.o: start.S
 	clang --target=aarch64-elf $(CFLAGS) -c start.S -o start.o
 
-%.o: %.c
+%.o: %.cpp
 	clang --target=aarch64-elf $(CFLAGS) -c $< -o $@
 
 kernel8.img: start.o $(OBJS)
