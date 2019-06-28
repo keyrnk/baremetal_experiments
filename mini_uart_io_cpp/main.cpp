@@ -3,49 +3,47 @@
 #include <vector>
 #include "uart_output.h"
 
-struct custom_delete
-{
-constexpr custom_delete() noexcept = default;
-void
-operator()(int* __ptr) const
-{
-	return;
-}
-};
+extern unsigned char heap_start;
+extern unsigned char heap_end;
 
-class MyObject
+template <class T>
+struct ArenaAllocator
 {
-public:
-	void operator delete(void* ptr) noexcept
+	using value_type = T;	
+	using pointer = T*;
+	using const_pointer = const T*;
+	using reference = T&;
+	using const_reference = const T&;
+	using size_type = std::size_t;
+	using difference_type = std::ptrdiff_t;
+	
+	void deallocate(pointer p, size_type n)
 	{
-		//PutStr("Delete my obj\n");
-		return;
+	}
+
+	pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)
+	{
 	}
 };
 
+void memcpy(unsigned char* dest, const unsigned char* src, std::size_t count)
+{
+	for (size_t i = 0; i < count; ++i)
+	{
+		*dest = *src;
+		++dest;
+		++src;
+	}
+}
 
 int main()
 {
-	std::array<char, 5> arr;
-	arr[0] = 'a';
-
-	int s = 3;
-
-	std::char_traits<char> traits;
-	std::unique_ptr<int, custom_delete> v(&s);
-	
-	MyObject obj;
-	std::unique_ptr<MyObject> ptr(&obj);
-
 	InitMiniUart();
-
 	PutStr("Hello fucking world!\n");
-	PutChar(arr[0]);
-	//std::cout << "Hello\n";
-	//while(1)
-	//{
-	//	PutChar(GetChar());
-	//}
+
+	std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s = "s";
+
+	
 
 	return 0;
 }
