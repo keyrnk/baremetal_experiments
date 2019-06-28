@@ -16,6 +16,11 @@
 #define GPPUD_REG           ((volatile unsigned int*)(MMIO_BASE+0x00200094))
 #define GPPUDCLK0_REG       ((volatile unsigned int*)(MMIO_BASE+0x00200098))
 
+#include <array>
+#include <vector>
+#include <string>
+#include <memory>
+
 void WriteToRegister(volatile unsigned int* reg, const unsigned int val)
 {
 	*reg = val;
@@ -115,15 +120,55 @@ void PutStr(const char* s)
 	}
 }
 
+
+struct custom_delete
+{
+constexpr custom_delete() noexcept = default;
+void
+operator()(int* __ptr) const
+{
+	return;
+}
+};
+
+class MyObject
+{
+public:
+	void operator delete(void* ptr) noexcept
+	{
+		//PutStr("Delete my obj\n");
+		return;
+	}
+};
+
+template <class CharT, class Traits = std::char_traits<CharT>, std::size_t N>
+class static_string
+{
+};
+
+
 int main()
 {
+	std::array<char, 5> arr;
+	arr[0] = 'a';
+
+	int s = 3;
+
+	std::char_traits<char> traits;
+	std::unique_ptr<int, custom_delete> v(&s);
+	
+	MyObject obj;
+	std::unique_ptr<MyObject> ptr(&obj);
+
 	InitMiniUart();
 
 	PutStr("Hello fucking world!\n");
-	while(1)
-	{
-		PutChar(GetChar());
-	}
+	PutChar(arr[0]);
+	//std::cout << "Hello\n";
+	//while(1)
+	//{
+	//	PutChar(GetChar());
+	//}
 
 	return 0;
 }
