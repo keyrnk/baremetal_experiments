@@ -20,4 +20,9 @@ std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(16, 's'
 doesn't require
 std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(15, 's');
 
+4. std::basic_string<...> is marked as throw()/noexcept
+so if allocator::deallocate calls inside throw-func you'll see compilation error
+undefined reference to __cxa_call_unexpected
+
+
 

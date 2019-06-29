@@ -79,7 +79,7 @@ void InitMiniUart()
 	WriteToRegister(AUX_MU_CNTL_REG, ReceiverTransmitterEnable);
 }
 
-char GetChar() 
+char GetChar()
 {
 	const unsigned int DataReadyBit = 0x01;
     	char r;
@@ -89,7 +89,7 @@ char GetChar()
    	return r=='\r'?'\n':r;
 }
 
-void PutChar(const char ch)
+void PutChar(const char ch) noexcept
 {
 	const unsigned int DataReadyBit = 0x20;
 	while (1)
@@ -103,7 +103,7 @@ void PutChar(const char ch)
 	WriteToRegister(AUX_MU_IO_REG, (const unsigned int)ch);
 }
 
-void PutStr(const char* s)
+void PutStr(const char* s) noexcept
 {
 	while(*s != '\0')
 	{

@@ -3,7 +3,7 @@
 
 void InitMiniUart();
 char GetChar() ;
-void PutChar(const char ch);
-void PutStr(const char* s);
+void PutChar(const char ch) noexcept;
+void PutStr(const char* s) noexcept;
 
 #endif

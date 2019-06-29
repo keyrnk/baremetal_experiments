@@ -33,6 +33,13 @@ void* memset(void* ptr, int value, std::size_t n)
 	return ptr;
 }
 
+extern "C"
+void __cxa_call_unexpected(void*)
+{
+	while(true)
+	{}
+}
+
 
 template <class T>
 struct ArenaAllocator
@@ -87,13 +94,14 @@ struct ArenaAllocator
 	Arena arena;
 
 	ArenaAllocator()
-		: arena(1024, &heap_start)
+		: arena((&heap_end - &heap_start), &heap_start)
 	{
 		PutStr("Allocator ctor\n");
 	}
 
 	void deallocate(pointer p, size_type n)
 	{
+		PutStr("deallocate\n");
 		pointer startAddress = arena.blocks[0].address;
 		size_type blockIndex = (p - startAddress) / block_size;
 		if (arena.freeList == nullptr)
@@ -131,15 +139,15 @@ struct ArenaAllocator
 			arena.blocks[arena.index].address = arena.curAddress;
 			address = arena.curAddress;
 			arena.blocks[arena.index].size = block_size;
-			++ arena.index;
+			++arena.index;
 			arena.size -= block_size;
 		}
 
 		PutStr("allocate\n");
 		return address;
 	}
-};
 
+};
 
 
 int main()
