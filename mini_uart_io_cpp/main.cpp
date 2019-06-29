@@ -10,14 +10,27 @@ extern "C"
 void* memcpy(void* dst, const void* src, std::size_t n)
 {
 	PutStr("memcpy\n");
-	char* dstC = (char*)dst;
-	const char* srcC = (const char*)src;
+	char* dstC = static_cast<char*>(dst);
+	const char* srcC = static_cast<const char*>(src);
 
 	for (std::size_t i = 0; i < n; ++i, ++dstC, ++srcC)
 	{
 		*dstC = *srcC;
 	}
 	return dst;
+}
+
+extern "C"
+void* memset(void* ptr, int value, std::size_t n)
+{
+	PutStr("memset\n");
+	char* dst = static_cast<char*>(ptr);
+	for (std::size_t i = 0; i < n; ++i, ++dst)
+	{
+		*dst = static_cast<char>(value);
+	}
+
+	return ptr;
 }
 
 
@@ -134,7 +147,7 @@ int main()
 	InitMiniUart();
 	PutStr("Hello fucking world!\n");
 
-	std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(15, 's');
+	std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(16, 's');
 
 	PutStr(s.c_str());
 	
