@@ -14,3 +14,10 @@ These commands will build (be prepared for a long build :)) and install both ld.
 ld.lld: error: start.o:(.text.boot+0x34): has non-ABS relocation R_AARCH64_CALL26 against symbol 'main'  
 because bl instruction needs relocation mode
 
+3. strange 
+requires memset
+std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(16, 's');
+doesn't require
+std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(15, 's');
+
+
