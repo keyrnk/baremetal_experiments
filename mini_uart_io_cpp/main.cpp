@@ -33,11 +33,18 @@ void* memset(void* ptr, int value, std::size_t n)
 	return ptr;
 }
 
-extern "C"
-void __cxa_call_unexpected(void*)
-{
-	while(true)
-	{}
+namespace std {
+	void __throw_length_error(char const*)
+	{
+		while(true)
+		{}
+	}
+
+	void __throw_logic_error(char const*)
+	{
+		while(true)
+		{}
+	}
 }
 
 
@@ -149,16 +156,20 @@ struct ArenaAllocator
 
 };
 
+typedef std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > arena_string;
 
 int main()
 {
 	InitMiniUart();
 	PutStr("Hello fucking world!\n");
 
-	std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > s(16, 's');
+	arena_string s(16, 's');
+	arena_string t = s;
 
 	PutStr(s.c_str());
-	
+	PutChar('\n');
+	PutStr(t.c_str());
+	PutChar('\n');
 
 	return 0;
 }

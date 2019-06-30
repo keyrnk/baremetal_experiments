@@ -27,7 +27,7 @@ COMPILER_PATH = /home/user/opt/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/bin/
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 # CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
-CFLAGS = -Wall -O2 -ffreestanding -nostartfiles
+CFLAGS = -Wall -O2 -ffreestanding -nostartfiles -nostdlib
 
 all: clean kernel8.img
 
