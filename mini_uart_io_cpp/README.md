@@ -30,7 +30,7 @@ so if allocator::deallocate calls inside throw-func you'll see compilation error
 undefined reference to __cxa_call_unexpected
 
 5. string constructors require memcpy and memset impl
-6. string assignment requires std::__throw_logic_error and std::__throw_length_error_impl
+6. string assignment requires std::__throw_logic_error and std::__throw_length_error impl
 
 
 

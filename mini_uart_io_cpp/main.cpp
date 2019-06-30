@@ -12,7 +12,6 @@ void* memcpy(void* dst, const void* src, std::size_t n)
 	PutStr("memcpy\n");
 	char* dstC = static_cast<char*>(dst);
 	const char* srcC = static_cast<const char*>(src);
-
 	for (std::size_t i = 0; i < n; ++i, ++dstC, ++srcC)
 	{
 		*dstC = *srcC;
@@ -148,6 +147,7 @@ struct ArenaAllocator
 			arena.blocks[arena.index].size = block_size;
 			++arena.index;
 			arena.size -= block_size;
+			arena.curAddress += block_size;
 		}
 
 		PutStr("allocate\n");
@@ -165,7 +165,7 @@ int main()
 
 	arena_string s(16, 's');
 	arena_string t = s;
-
+	t.append("ddd");
 	PutStr(s.c_str());
 	PutChar('\n');
 	PutStr(t.c_str());
