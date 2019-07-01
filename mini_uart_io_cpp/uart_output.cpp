@@ -91,7 +91,7 @@ char GetChar()
    	return r=='\r'?'\n':r;
 }
 
-void PutChar(const char ch) noexcept
+void WaitForRegisterReady() noexcept
 {
 	const unsigned int DataReadyBit = 0x20;
 	while (1)
@@ -101,7 +101,11 @@ void PutChar(const char ch) noexcept
 		if (lsrRegVal & DataReadyBit)
 			break;
 	}
+}
 
+void PutChar(const char ch) noexcept
+{
+	WaitForRegisterReady();
 	WriteToRegister(AUX_MU_IO_REG, (const unsigned int)ch);
 }
 
@@ -119,14 +123,7 @@ void PutStr(const char* s) noexcept
 
 void PutInt(const int i) noexcept
 {
-	const unsigned int DataReadyBit = 0x20;
-	while (1)
-	{
-		unsigned int lsrRegVal;
-		ReadFromRegister(AUX_MU_LSR_REG, &lsrRegVal);
-		if (lsrRegVal & DataReadyBit)
-			break;
-	}
+	WaitForRegisterReady();
 
 	char buf[32];
 	std::size_t ind = 0;
