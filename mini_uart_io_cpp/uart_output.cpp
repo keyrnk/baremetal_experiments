@@ -16,6 +16,8 @@
 #define GPPUD_REG           ((volatile unsigned int*)(MMIO_BASE+0x00200094))
 #define GPPUDCLK0_REG       ((volatile unsigned int*)(MMIO_BASE+0x00200098))
 
+#include <cstddef>
+
 void WriteToRegister(volatile unsigned int* reg, const unsigned int val)
 {
 	*reg = val;
@@ -114,3 +116,34 @@ void PutStr(const char* s) noexcept
 		s++;
 	}
 }
+
+void PutInt(const int i) noexcept
+{
+	const unsigned int DataReadyBit = 0x20;
+	while (1)
+	{
+		unsigned int lsrRegVal;
+		ReadFromRegister(AUX_MU_LSR_REG, &lsrRegVal);
+		if (lsrRegVal & DataReadyBit)
+			break;
+	}
+
+	char buf[32];
+	std::size_t ind = 0;
+	const size_t Base = 10;
+
+	int out = i;
+	do {
+		buf[ind] = (char)(out % Base + 48);
+		++ind;
+		out /= Base;
+	} while (out != 0);
+	
+	for (int j = ind - 1; j >= 0; --j)
+	{
+		PutChar(buf[j]);
+	}
+
+}
+
+

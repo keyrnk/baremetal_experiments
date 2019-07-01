@@ -162,14 +162,21 @@ int main()
 {
 	InitMiniUart();
 	PutStr("Hello fucking world!\n");
+	{
+		arena_string s(16, 's');
+		arena_string t = std::move(s);
+		t.append("ddd");
+		PutStr(s.c_str());
+		PutChar('\n');
+		PutStr(t.c_str());
+		PutChar('\n');
+	}
 
-	arena_string s(16, 's');
-	arena_string t = s;
-	t.append("ddd");
+	arena_string s(8, 'r');
+	s.find('g');
 	PutStr(s.c_str());
 	PutChar('\n');
-	PutStr(t.c_str());
-	PutChar('\n');
 
+	PutInt(1023);
 	return 0;
 }
