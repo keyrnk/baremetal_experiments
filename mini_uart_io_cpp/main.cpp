@@ -160,6 +160,7 @@ typedef std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > a
 
 int main()
 {
+	UartStreamBuf streamBuf;
 	InitMiniUart();
 	PutStr("Hello fucking world!\n");
 	{

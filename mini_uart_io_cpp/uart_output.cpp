@@ -17,6 +17,8 @@
 #define GPPUDCLK0_REG       ((volatile unsigned int*)(MMIO_BASE+0x00200098))
 
 #include <cstddef>
+#include <streambuf>
+
 
 void WriteToRegister(volatile unsigned int* reg, const unsigned int val)
 {
