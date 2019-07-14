@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <ios>
 #include <streambuf>
+#include <ostream>
 
 void InitMiniUart();
 char GetChar() ;
@@ -26,20 +27,38 @@ locale::~locale()
 }
 
 template <class T, std::size_t N>
-class UartStreamBufBase : public std::streambuf
+class UartStreamBufBase : public std::basic_streambuf<char, std::char_traits<char>>
 {
 public:
-	UartStreamBufBase()
+	explicit UartStreamBufBase() noexcept
+	{
+		setp(&m_buf.front(), &m_buf.front() + m_buf.max_size());
+	}
+
+//see arobenko explanation
+	void operator delete(void*, unsigned long)
+	{}
+		
+	virtual ~UartStreamBufBase()
 	{
 	}
 
-	~UartStreamBufBase()
+	int_type overflow(int_type ch)
 	{
+		if (ch != traits_type::eof())
+		{
+			*pptr() = ch;
+			pbump(1);
+			do_flush();
+		}
+
+		return traits_type::eof();
 	}
 
-	int_type overflow(int_type)
+	void do_flush()
 	{
-		return -1;
+		std::ptrdiff_t n = pptr() - pbase();
+		PutInt(n);
 	}
 
 	std::streamsize xsputn(const char_type* s, std::streamsize n)
@@ -74,6 +93,7 @@ public:
 
 	int sync()
 	{
+		do_flush();
 		return 0;
 	}
 
@@ -103,6 +123,18 @@ private:
 	std::array<T, N> m_buf;
 };
 
-typedef UartStreamBufBase UartStreamBuf;
+typedef UartStreamBufBase<char, 256> UartStreamBuf;
+typedef std::basic_ostream<char, std::char_traits<char>> cout_type;
+
+class uart_ostream : virtual public std::basic_ostream<char, std::char_traits<char>>
+{
+public:
+	uart_ostream()
+	{
+	}
+
+	virtual ~uart_ostream() {}
+};
+
 
 #endif

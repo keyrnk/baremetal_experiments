@@ -1,7 +1,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "uart_output.h"
+#include "basic_stream.h"
 
 extern char heap_start;
 extern char heap_end;
@@ -9,7 +9,7 @@ extern char heap_end;
 extern "C"
 void* memcpy(void* dst, const void* src, std::size_t n)
 {
-	PutStr("memcpy\n");
+	//PutStr("memcpy\n");
 	char* dstC = static_cast<char*>(dst);
 	const char* srcC = static_cast<const char*>(src);
 	for (std::size_t i = 0; i < n; ++i, ++dstC, ++srcC)
@@ -22,7 +22,7 @@ void* memcpy(void* dst, const void* src, std::size_t n)
 extern "C"
 void* memset(void* ptr, int value, std::size_t n)
 {
-	PutStr("memset\n");
+	//PutStr("memset\n");
 	char* dst = static_cast<char*>(ptr);
 	for (std::size_t i = 0; i < n; ++i, ++dst)
 	{
@@ -102,12 +102,10 @@ struct ArenaAllocator
 	ArenaAllocator()
 		: arena((&heap_end - &heap_start), &heap_start)
 	{
-		PutStr("Allocator ctor\n");
 	}
 
 	void deallocate(pointer p, size_type n)
 	{
-		PutStr("deallocate\n");
 		pointer startAddress = arena.blocks[0].address;
 		size_type blockIndex = (p - startAddress) / block_size;
 		if (arena.freeList == nullptr)
@@ -150,7 +148,7 @@ struct ArenaAllocator
 			arena.curAddress += block_size;
 		}
 
-		PutStr("allocate\n");
+		cout << "allocate\n";
 		return address;
 	}
 
@@ -160,24 +158,18 @@ typedef std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > a
 
 int main()
 {
-	UartStreamBuf streamBuf;
-	InitMiniUart();
-	PutStr("Hello fucking world!\n");
+	cout << "Hello fucking world!\n";
 	{
 		arena_string s(16, 's');
 		arena_string t = std::move(s);
 		t.append("ddd");
-		PutStr(s.c_str());
-		PutChar('\n');
-		PutStr(t.c_str());
-		PutChar('\n');
+		cout << s.c_str() << '\n' << t.c_str() << '\n';
 	}
 
 	arena_string s(8, 'r');
 	s.find('g');
-	PutStr(s.c_str());
-	PutChar('\n');
 
-	PutInt(1023);
+	cout << s.c_str() << '\n' << 1023;
+
 	return 0;
 }

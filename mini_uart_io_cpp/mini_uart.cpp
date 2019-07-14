@@ -17,20 +17,21 @@
 #define GPPUDCLK0_REG       ((volatile unsigned int*)(MMIO_BASE+0x00200098))
 
 #include <cstddef>
-#include <streambuf>
+#include "mini_uart.h"
 
+bool MiniUartIO::m_isInitialized = false;
 
-void WriteToRegister(volatile unsigned int* reg, const unsigned int val)
+void MiniUartIO::WriteToRegister(volatile unsigned int* reg, const unsigned int val)
 {
 	*reg = val;
 }
 
-void ReadFromRegister(volatile unsigned int* reg, unsigned int* val)
+void MiniUartIO::ReadFromRegister(volatile unsigned int* reg, unsigned int* val)
 {
 	*val = *reg;
 }
 
-static void SetUpGPIO(void)
+void MiniUartIO::SetUpGPIO(void)
 {
 	//alternate pin 14 and pin 15 to miniuart tx/rx mode
 	unsigned int reg;
@@ -60,7 +61,7 @@ static void SetUpGPIO(void)
     	WriteToRegister(GPPUDCLK0_REG, 0);
 }
 
-void InitMiniUart()
+void MiniUartIO::InitMiniUart()
 {
 	unsigned int auxEnableReg;
 	ReadFromRegister(AUX_ENABLE_REG, &auxEnableReg);
@@ -83,7 +84,7 @@ void InitMiniUart()
 	WriteToRegister(AUX_MU_CNTL_REG, ReceiverTransmitterEnable);
 }
 
-char GetChar()
+char MiniUartIO::GetChar()
 {
 	const unsigned int DataReadyBit = 0x01;
     	char r;
@@ -93,7 +94,7 @@ char GetChar()
    	return r=='\r'?'\n':r;
 }
 
-void WaitForRegisterReady() noexcept
+void MiniUartIO::WaitForRegisterReady() noexcept
 {
 	const unsigned int DataReadyBit = 0x20;
 	while (1)
@@ -105,13 +106,13 @@ void WaitForRegisterReady() noexcept
 	}
 }
 
-void PutChar(const char ch) noexcept
+void MiniUartIO::PutChar(const char ch) noexcept
 {
 	WaitForRegisterReady();
 	WriteToRegister(AUX_MU_IO_REG, (const unsigned int)ch);
 }
 
-void PutStr(const char* s) noexcept
+void MiniUartIO::PutStr(const char* s) noexcept
 {
 	while(*s != '\0')
 	{
@@ -123,7 +124,7 @@ void PutStr(const char* s) noexcept
 	}
 }
 
-void PutInt(const int i) noexcept
+void MiniUartIO::PutInt(const int i) noexcept
 {
 	WaitForRegisterReady();
 
@@ -142,7 +143,7 @@ void PutInt(const int i) noexcept
 	{
 		PutChar(buf[j]);
 	}
-
 }
+
 
 

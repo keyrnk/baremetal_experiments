@@ -28,7 +28,7 @@ SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 # CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
 #CFLAGS = -Wall -O2 -ffreestanding -nostartfiles -nostdlib
-CFLAGS = -Wall -O2 -ffreestanding -nostdlib
+CFLAGS = -Wall -O2 -ffreestanding -fno-rtti -fno-exceptions -nostdlib
 
 all: clean kernel8.img
 
