@@ -49,6 +49,10 @@ typedef std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > a
 
 int main()
 {
+
+	arena_string h("hello this fucking world\n");
+	cout << h.c_str();
+
 	cout << "Hello fucking world!\n";
 	{
 		arena_string s(16, 's');

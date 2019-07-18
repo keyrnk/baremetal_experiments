@@ -10,19 +10,16 @@ extern char heap_start;
 extern char heap_end;
 
 template <class T>
-struct ArenaAllocator
+class Arena
 {
-	using value_type = T;	
+public:
+	using value_type = T;
 	using pointer = T*;
-	using const_pointer = const T*;
-	using reference = T&;
-	using const_reference = const T&;
 	using size_type = std::size_t;
-	using difference_type = std::ptrdiff_t;
 
 	static const size_type BlockSize = 64;
 	static const size_type MaxHeapSize = 1024;
-
+public:
 	struct Block 
 	{
 		Block(pointer newAddress, size_type newSize)
@@ -39,53 +36,45 @@ struct ArenaAllocator
 		pointer address;
 		size_type size;
 	};
-	
-	struct Arena {	
-		Arena()
-		{}
 
-		Arena(size_type heapSize, pointer startAddress)
-			: blocksNum(heapSize / BlockSize)
-			, startAddress(startAddress)
-			, index(0)
-			, freeList(nullptr)
-		{}
+public:
+	Arena() = default;
 
-		std::array<Block, MaxHeapSize / BlockSize> blocks;
-	
-		size_type blocksNum;
-		pointer startAddress;
-		size_type index; 
-		Block* freeList;
-	};
-
-	static Arena arena;
-
-	ArenaAllocator() = default;
-
-	pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)
+	void Init(size_type heapSize, pointer startAddress)
 	{
-		cout << "allocate\n";
+		if (!isInited)
+		{
+			blocksNum = heapSize / BlockSize;
+			startAddress = startAddress;
+			index = 0;
+			freeList = nullptr;
+		}
+	}
+
+public:
+	pointer allocate(size_type n)
+	{
+		cout << "allocate " << (int)&heap_start << " " << (int)&heap_end;
 		if (n > BlockSize)
 			return nullptr;
 
 		pointer address;
-		if (arena.freeList != nullptr)
+		if (freeList != nullptr)
 		{
-			Block* oldHead = arena.freeList;
+			Block* oldHead = freeList;
 			oldHead->next = nullptr;
 			address = oldHead->address;
-			arena.freeList = arena.freeList->next;
+			freeList = freeList->next;
 		}
 		else
 		{
-			if (arena.index >= arena.blocksNum)
+			if (index >= blocksNum)
 			{
 				return nullptr;
 			}
-			arena.blocks[arena.index].address = arena.startAddress + arena.index * BlockSize;
-			arena.blocks[arena.index].size = BlockSize;
-			++arena.index;
+			blocks[index].address = startAddress + index * BlockSize;
+			blocks[index].size = BlockSize;
+			++index;
 		}
 
 		return address;
@@ -93,23 +82,60 @@ struct ArenaAllocator
 
 	void deallocate(pointer p, size_type n)
 	{
-		cout << "deallocate\n";
-		size_type blockIndex = (p - arena.startAddress) / BlockSize;
-		if (arena.freeList == nullptr)
+		cout << "deallocate index " << (int)index << '\n';
+		size_type blockIndex = (p - startAddress) / BlockSize;
+		if (freeList == nullptr)
 		{
-			arena.freeList = &arena.blocks[blockIndex];
+			freeList = &blocks[blockIndex];
 		}
 		else
 		{
-			Block* oldFreeList = arena.freeList;
-			arena.freeList = &arena.blocks[blockIndex];
-			arena.freeList->next = oldFreeList;
+			Block* oldFreeList = freeList;
+			freeList = &blocks[blockIndex];
+			freeList->next = oldFreeList;
 		}
+	}
+
+private:
+	bool isInited = false;
+	std::array<Block, MaxHeapSize / BlockSize> blocks;
+	size_type blocksNum;
+	pointer startAddress;
+	size_type index; 
+	Block* freeList;
+};
+
+template <class T>
+struct ArenaAllocator
+{
+	using value_type = T;	
+	using pointer = T*;
+	using const_pointer = const T*;
+	using reference = T&;
+	using const_reference = const T&;
+	using size_type = std::size_t;
+	using difference_type = std::ptrdiff_t;
+
+	static Arena<T> arena;
+
+	ArenaAllocator()
+	{
+		arena.Init((&heap_end - &heap_start), &heap_start);
+	}
+
+	pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)
+	{
+		return arena.allocate(n);
+	}
+
+	void deallocate(pointer p, size_type n)
+	{
+		arena.deallocate(p, n);
 	}
 
 };
 
 template <class T>
-typename ArenaAllocator<T>::Arena ArenaAllocator<T>::arena((&heap_end - &heap_start), &heap_start);
+Arena<T> ArenaAllocator<T>::arena;
 
 #endif
