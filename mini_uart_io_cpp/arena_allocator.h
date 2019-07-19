@@ -30,17 +30,26 @@ public:
 
 	static Arena<T> arena;
 
-	ArenaAllocator()
+public:
+	ArenaAllocator() noexcept
 	{
 		arena.Init((&heap_end - &heap_start), &heap_start);
 	}
 
-	pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)
+	ArenaAllocator(const ArenaAllocator& other) noexcept {}
+	
+	template<typename U>
+	ArenaAllocator(const ArenaAllocator<U>& other) noexcept {}
+	
+	~ArenaAllocator() noexcept {}
+
+public:
+	static pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)
 	{
 		return arena.allocate(n);
 	}
 
-	void deallocate(pointer p, size_type n)
+	static void deallocate(pointer p, size_type n)
 	{
 		arena.deallocate(p, n);
 	}
