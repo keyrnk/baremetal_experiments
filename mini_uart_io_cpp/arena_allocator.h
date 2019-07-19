@@ -154,7 +154,7 @@ bool operator == (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& sec
 }
 
 template <class T1, class T2>
-bool operator != (ArenaAllocator<T1> first, ArenaAllocator<T2> second) noexcept
+bool operator != (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
 {
 	return false;
 }
