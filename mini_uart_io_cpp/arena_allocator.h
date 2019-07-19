@@ -106,8 +106,9 @@ private:
 };
 
 template <class T>
-struct ArenaAllocator
+class ArenaAllocator
 {
+public:
 	using value_type = T;	
 	using pointer = T*;
 	using const_pointer = const T*;
@@ -115,6 +116,11 @@ struct ArenaAllocator
 	using const_reference = const T&;
 	using size_type = std::size_t;
 	using difference_type = std::ptrdiff_t;
+
+	template <class U>
+	struct rebind {
+		typedef ArenaAllocator<U> other;	
+	};
 
 	static Arena<T> arena;
 
