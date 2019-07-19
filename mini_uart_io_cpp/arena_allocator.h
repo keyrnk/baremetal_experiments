@@ -54,7 +54,7 @@ public:
 public:
 	pointer allocate(size_type n)
 	{
-		cout << "allocate " << (int)&heap_start << " " << (int)&heap_end;
+		cout << "allocate\n";
 		if (n > BlockSize)
 			return nullptr;
 
@@ -82,7 +82,6 @@ public:
 
 	void deallocate(pointer p, size_type n)
 	{
-		cout << "deallocate index " << (int)index << '\n';
 		size_type blockIndex = (p - startAddress) / BlockSize;
 		if (freeList == nullptr)
 		{
@@ -117,6 +116,10 @@ public:
 	using size_type = std::size_t;
 	using difference_type = std::ptrdiff_t;
 
+	using propagate_on_container_copy_assignment = std::true_type;
+	using propagate_on_container_move_assignment = std::true_type;
+	using propagate_on_container_swap = std::true_type;
+
 	template <class U>
 	struct rebind {
 		typedef ArenaAllocator<U> other;	
@@ -143,5 +146,17 @@ public:
 
 template <class T>
 Arena<T> ArenaAllocator<T>::arena;
+
+template <class T1, class T2>
+bool operator == (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
+{
+	return true;
+}
+
+template <class T1, class T2>
+bool operator != (ArenaAllocator<T1> first, ArenaAllocator<T2> second) noexcept
+{
+	return false;
+}
 
 #endif
