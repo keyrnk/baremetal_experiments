@@ -6,6 +6,8 @@
 
 #include "basic_stream.h"
 
+//extern char __init_array_size;  
+
 template <class T>
 class Arena
 {
@@ -41,17 +43,19 @@ public:
 	{
 		if (!isInited)
 		{
+                        cout <<  "initialize\n";
 			blocksNum = heapSize / BlockSize;
 			startAddress = startAddress;
 			index = 0;
 			freeList = nullptr;
+                        isInited = true;
 		}
 	}
 
 public:
 	pointer allocate(size_type n)
 	{
-		cout << "allocate\n";
+		cout <<  "allocate index " << (int)index << "\n" ;
 		if (n > BlockSize)
 			return nullptr;
 
@@ -71,7 +75,9 @@ public:
 			}
 			blocks[index].address = startAddress + index * BlockSize;
 			blocks[index].size = BlockSize;
+                        address = blocks[index].address;
 			++index;
+                        
 		}
 
 		return address;
@@ -79,6 +85,7 @@ public:
 
 	void deallocate(pointer p, size_type n)
 	{
+                cout <<  "deallocate \n";
 		size_type blockIndex = (p - startAddress) / BlockSize;
 		if (freeList == nullptr)
 		{

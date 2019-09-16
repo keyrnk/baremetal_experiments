@@ -19,12 +19,22 @@ _start:
     // clear bss
     ldr     x1, =__bss_start
     ldr     w2, =__bss_size
-3:  cbz     w2, 4f
+3:  cbz     w2, init_globals
     str     xzr, [x1], #8
     sub     w2, w2, #1
-    cbnz    w2, 3b
+    b       3b
+
+init_globals:
+    ldr     x1, =__init_array_start
+    ldr     x2, =__init_array_end
+//init_loop:
+    sub x4, x2, x1
+    cbz     x4, 4f
+    ldr     x3, [x1], #8
+    blr     x3
+    //sub     w2, w2, #1
+ //   b       init_loop
+    
 
 4: bl main
    b  1b
-
-

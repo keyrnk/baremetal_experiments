@@ -7,3 +7,4 @@ bool __cxa_guard_release()
 {
 	return true;
 }
+

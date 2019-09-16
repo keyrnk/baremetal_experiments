@@ -8,7 +8,6 @@
 extern "C"
 void* memcpy(void* dst, const void* src, std::size_t n)
 {
-	//PutStr("memcpy\n");
 	char* dstC = static_cast<char*>(dst);
 	const char* srcC = static_cast<const char*>(src);
 	for (std::size_t i = 0; i < n; ++i, ++dstC, ++srcC)
@@ -21,7 +20,6 @@ void* memcpy(void* dst, const void* src, std::size_t n)
 extern "C"
 void* memset(void* ptr, int value, std::size_t n)
 {
-	//PutStr("memset\n");
 	char* dst = static_cast<char*>(ptr);
 	for (std::size_t i = 0; i < n; ++i, ++dst)
 	{
@@ -43,28 +41,31 @@ namespace std {
 		while(true)
 		{}
 	}
+
 }
+using arena_string = std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> >;
 
-typedef std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> > arena_string;
 
-int main()
+int main(int argc, char** argv)
 {
 
-	arena_string h("hello this fucking world\n");
+	arena_string h("hello this fucking worldsjdkkkkkkkkkkkkkk\n");
 	cout << h.c_str();
 
 	cout << "Hello fucking world!\n";
 	{
-		arena_string s(16, 's');
+		arena_string s(20, 's');
 		arena_string t = std::move(s);
 		t.append("ddd");
+                cout << h.c_str();
 		cout << s.c_str() << '\n' << t.c_str() << '\n';
 	}
 
 	arena_string s(8, 'r');
 	s.find('g');
 
-	cout << s.c_str() << '\n' << 1023;
-
+	cout << s.c_str() << '\n' << 1023 << "\n";
+        cout << h.c_str();
 	return 0;
+
 }

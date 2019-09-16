@@ -13,17 +13,25 @@ SECTIONS
         *(.bss .bss.*)
         *(COMMON)
         __bss_end = .;
+    } 
+    . = ALIGN(16);
+    .init.array :
+    {
+        __init_array_start = .;
+        *(.init_array)
+        *(.init_array.*)
+        __init_array_end = .;
     }
-    . = ALIGN(4);
+    . = ALIGN(16);
     .heap : {
-    	_heap_start = .;
+    	heap_start = .;
 	. = . + heap_size;
-	_heap_end = .;
+	heap_end = .;
     }
     _end = .;
 
    /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
 }
 __bss_size = (__bss_end - __bss_start)>>3;
-heap_start = _heap_start;
-heap_end = _heap_end;
+__init_array_size = (__init_array_end - __init_array_start)>>3;
+
