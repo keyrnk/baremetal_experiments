@@ -17,10 +17,10 @@ SECTIONS
     . = ALIGN(16);
     .init.array :
     {
-        __init_array_start = .;
+        init_array_start = .;
         *(.init_array)
         *(.init_array.*)
-        __init_array_end = .;
+        init_array_end = .;
     }
     . = ALIGN(16);
     .heap : {
@@ -33,5 +33,5 @@ SECTIONS
    /DISCARD/ : { *(.comment) *(.gnu*) *(.note*) *(.eh_frame*) }
 }
 __bss_size = (__bss_end - __bss_start)>>3;
-__init_array_size = (__init_array_end - __init_array_start)>>3;
+
 

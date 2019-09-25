@@ -1,3 +1,6 @@
+.extern main
+.extern StaticInitialize
+
 .section ".text.boot"
 
 .global _start
@@ -25,13 +28,14 @@ _start:
     b       3b
 
 init_globals:
-    ldr     x1, =__init_array_start
-    ldr     x2, =__init_array_end
+    bl StaticInitialize
+//    ldr     x1, =init_array_start
+//   ldr     x2, =init_array_end
 //init_loop:
-    sub x4, x2, x1
-    cbz     x4, 4f
-    ldr     x3, [x1], #8
-    blr     x3
+//    sub x4, x2, x1
+//    cbz     x4, 4f
+//    ldr     x3, [x1], #8
+//    blr     x3
     //sub     w2, w2, #1
  //   b       init_loop
     
