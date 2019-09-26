@@ -2,7 +2,7 @@
 #define __ARENA_ALLOCATOR_H_
 
 #include <cstddef>
-#include "arena.h"
+#include "bit_map_arena.h"
 
 template <class T>
 class ArenaAllocator
@@ -25,7 +25,7 @@ public:
 		typedef ArenaAllocator<U> other;	
 	};
 
-	static Arena<T> arena;
+	static BitMapArena<T> arena;
 
 public:
 	ArenaAllocator() noexcept = default;
@@ -49,7 +49,7 @@ public:
 };
 
 template <class T>
-Arena<T> ArenaAllocator<T>::arena;
+BitMapArena<T> ArenaAllocator<T>::arena;
 
 template <class T1, class T2>
 bool operator == (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
