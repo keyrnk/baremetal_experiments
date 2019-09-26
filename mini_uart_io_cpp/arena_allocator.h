@@ -4,9 +4,6 @@
 #include <cstddef>
 #include "arena.h"
 
-extern char heap_start;
-extern char heap_end;
-
 template <class T>
 class ArenaAllocator
 {
@@ -31,17 +28,12 @@ public:
 	static Arena<T> arena;
 
 public:
-	ArenaAllocator() noexcept
-	{
-		arena.Init((&heap_end - &heap_start), &heap_start);
-	}
-
-	ArenaAllocator(const ArenaAllocator& other) noexcept {}
+	ArenaAllocator() noexcept = default;
+	ArenaAllocator(const ArenaAllocator& other) noexcept = default;
 	
 	template<typename U>
-	ArenaAllocator(const ArenaAllocator<U>& other) noexcept {}
-	
-	~ArenaAllocator() noexcept {}
+	ArenaAllocator(const ArenaAllocator<U>& other) noexcept {};	
+	~ArenaAllocator() noexcept = default;
 
 public:
 	static pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)

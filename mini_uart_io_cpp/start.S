@@ -29,16 +29,6 @@ _start:
 
 init_globals:
     bl StaticInitialize
-//    ldr     x1, =init_array_start
-//   ldr     x2, =init_array_end
-//init_loop:
-//    sub x4, x2, x1
-//    cbz     x4, 4f
-//    ldr     x3, [x1], #8
-//    blr     x3
-    //sub     w2, w2, #1
- //   b       init_loop
-    
 
 4: bl main
    b  1b

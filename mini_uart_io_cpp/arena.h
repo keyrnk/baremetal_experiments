@@ -6,7 +6,8 @@
 
 #include "basic_stream.h"
 
-//extern char __init_array_size;  
+extern char heap_start;
+extern char heap_end;  
 
 template <class T>
 class Arena
@@ -37,20 +38,16 @@ public:
 	};
 
 public:
-	Arena() = default;
-
-	void Init(size_type heapSize, pointer startAddress)
-	{
-		if (!isInited)
-		{
-                        cout <<  "initialize\n";
-			blocksNum = heapSize / BlockSize;
-			startAddress = startAddress;
-			index = 0;
-			freeList = nullptr;
-                        isInited = true;
-		}
-	}
+	Arena()
+        {
+             cout <<  "arena ctor\n";
+             size_t heapSize = &heap_end - &heap_start;
+             char* startAddress = &heap_start;
+	     blocksNum = heapSize / BlockSize;
+	     startAddress = startAddress;
+	     index = 0;
+	     freeList = nullptr;
+        }
 
 public:
 	pointer allocate(size_type n)
@@ -100,7 +97,6 @@ public:
 	}
 
 private:
-	bool isInited = false;
 	std::array<Block, MaxHeapSize / BlockSize> blocks;
 	size_type blocksNum;
 	pointer startAddress;

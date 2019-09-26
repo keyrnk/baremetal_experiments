@@ -6,11 +6,6 @@
 #include "arena_allocator.h"
 #include "basic_stream.h"
 
-//extern char init_array_start;
-//extern char init_array_end;
-extern void(*init_array_start[])(void);
-extern void(*init_array_end[])(void);
-
 extern "C"
 void* memcpy(void* dst, const void* src, std::size_t n)
 {
@@ -51,21 +46,6 @@ namespace std {
 }
 using arena_string = std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> >;
 
-extern "C"
-void StaticInitialize()
-{
-size_t count = init_array_end - init_array_start;
-for (size_t i = 0; i < count; ++i)
-{
-  init_array_start[i]();
-}
-
-}
-
-int __cxa_atexit()
-{
-  return 0;
-}
 class SimpleClass
 {
 public:
@@ -73,13 +53,15 @@ public:
   {
     cout << "ctor\n";
   }
+  ~SimpleClass()
+{
+cout << "dtor\n";
+}
 
 };
 static SimpleClass s;
 int main()
 {
-  
-/*
 	arena_string h("hello this fucking worldsjdkkkkkkkkkkkkkk\n");
 	cout << h.c_str();
 
@@ -96,6 +78,6 @@ int main()
 	s.find('g');
 
 	cout << s.c_str() << '\n' << 1023 << "\n";
-        cout << h.c_str();*/
+        cout << h.c_str();
 	return 0;
 }
