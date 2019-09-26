@@ -26,6 +26,7 @@ public:
             , m_startSearchIndex(0)
         {
              cout <<  "bit map arena ctor\n";
+             m_bitMap.fill(false);
         }
 
 public:
