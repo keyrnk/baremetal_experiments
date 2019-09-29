@@ -13,10 +13,10 @@ _start:
     // cpu id > 0, stop
 1:  wfe
     b       1b
-2:  // cpu id == 0
+2: // cpu id == 0
 
     // set stack before our code
-    ldr     x1, =_start
+    ldr     x1, =stack_start
     mov     sp, x1
 
     // clear bss

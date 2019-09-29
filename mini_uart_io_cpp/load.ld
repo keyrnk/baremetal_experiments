@@ -1,4 +1,5 @@
-heap_size = 1024;
+heap_size = 1M;
+stack_size = 1M;
 
 SECTIONS
 {
@@ -27,6 +28,11 @@ SECTIONS
     	heap_start = .;
 	. = . + heap_size;
 	heap_end = .;
+    }
+    .stack : {
+        stack_end = .;
+        . = . + stack_size;
+        stack_start = .;
     }
     _end = .;
 
