@@ -44,7 +44,7 @@ namespace std {
 	}
 
 }
-using arena_string = std::basic_string<char, std::char_traits<char>, ArenaAllocator<char> >;
+using arena_string = std::basic_string<char, std::char_traits<char>, BaremetalAllocator<char> >;
 
 class SimpleClass
 {

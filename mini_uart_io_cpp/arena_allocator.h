@@ -4,7 +4,7 @@
 #include <cstddef>
 #include "bit_map_arena.h"
 
-template <class T>
+template <class T, class AllocationStrategy >
 class ArenaAllocator
 {
 public:
@@ -22,21 +22,21 @@ public:
 
 	template <class U>
 	struct rebind {
-		typedef ArenaAllocator<U> other;	
+		typedef ArenaAllocator<U, AllocationStrategy> other;	
 	};
 
-	static BitMapArena<T> arena;
+	static AllocationStrategy arena;
 
 public:
 	ArenaAllocator() noexcept = default;
 	ArenaAllocator(const ArenaAllocator& other) noexcept = default;
 	
 	template<typename U>
-	ArenaAllocator(const ArenaAllocator<U>& other) noexcept {};	
+	ArenaAllocator(const ArenaAllocator<U, AllocationStrategy>& other) noexcept {};	
 	~ArenaAllocator() noexcept = default;
 
 public:
-	static pointer allocate(size_type n, ArenaAllocator<T>::const_pointer hint = 0)
+	static pointer allocate(size_type n, ArenaAllocator<T, AllocationStrategy>::const_pointer hint = 0)
 	{
 		return arena.allocate(n);
 	}
@@ -48,19 +48,21 @@ public:
 
 };
 
-template <class T>
-BitMapArena<T> ArenaAllocator<T>::arena;
+template <class T, class AllocationStrategy>
+AllocationStrategy ArenaAllocator<T, AllocationStrategy>::arena;
 
-template <class T1, class T2>
-bool operator == (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
+template <class T1, class T2, class AllocationStrategy>
+bool operator == (const ArenaAllocator<T1, AllocationStrategy>& first, const ArenaAllocator<T2, AllocationStrategy>& second) noexcept
 {
 	return true;
 }
 
-template <class T1, class T2>
-bool operator != (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
+template <class T1, class T2, class AllocationStrategy>
+bool operator != (const ArenaAllocator<T1, AllocationStrategy>& first, const ArenaAllocator<T2, AllocationStrategy>& second) noexcept
 {
 	return false;
 }
 
+template <class T>
+using BaremetalAllocator = ArenaAllocator<T, BitMapArena<T> >;
 #endif
