@@ -1,6 +1,7 @@
 heap_size = 1M;
 stack_size = 1M;
 
+ENTRY(interrupt_vector)
 SECTIONS
 {
     . = 0x80000;
