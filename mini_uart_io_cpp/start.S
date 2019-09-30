@@ -1,5 +1,6 @@
 .extern main
 .extern StaticInitialize
+.extern stack_start
 
 .section ".text.boot"
 .global interrupt_vector
@@ -35,36 +36,53 @@ start:
     // read cpu id, stop slave cores
     mrs     x1, mpidr_el1
     and     x1, x1, #3
-    cbz     x1, 2f
-    // cpu id > 0, stop
-1:  wfe
-    b       1b
-2: // cpu id == 0
-   
-   ldr x1,=interrupt_vector
-   mov x2,#0x0000
-   ldp x3, x18, [x1], #128
-   stp x3, x18, [x2], #128
+    cbz     x1, continue
+    // cpu id > 0, stop 
+    wfe
+    b       hang
 
-   ldp x3, x10, [x1], #64
-   stp x3, x10, [x2], #64
+continue: 
+    // cpu id == 0
+    msr DAIFClr, #15
 
-    // set stack before our code
-    ldr     x1, =stack_start
-    mov     sp, x1
+    ldr x0,=interrupt_vector
+    mov x1,#0x0000
+    ldp x2, x17, [x0], #128
+    stp x2, x17, [x1], #128
+
+    ldp x2, x9, [x0], #64
+    stp x2, x9, [x1], #64
+
+    //set interrupt stacks
+    ldr x0, =stack_start
+    mov x1, #0x1000
+
+    msr DAIFSet, #2
+    mov sp,x0
+    sub x0,x0,x1
+
+    msr DAIFSet, #1
+    mov sp,x0
+    sub x0,x0,x1
+
+    msr DAIFClr, #15
+    
+    // set stack
+    mov sp,x0
 
     // clear bss
     ldr     x1, =__bss_start
     ldr     w2, =__bss_size
-3:  cbz     w2, init_globals
+bss_loop:  
+    cbz     w2, init_globals
     str     xzr, [x1], #8
     sub     w2, w2, #1
-    b       3b
+    b       bss_loop
 
 init_globals:
     bl StaticInitialize
 
-4: bl main
-   b  1b
+    bl main
+    b  hang
 
 hang: b hang
