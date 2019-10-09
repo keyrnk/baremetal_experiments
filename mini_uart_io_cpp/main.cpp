@@ -37,8 +37,9 @@ namespace std {
 		{}
 	}
 
-	void __throw_logic_error(char const*)
+	void __throw_logic_error(char const* s)
 	{
+                //throw std::length_error(s);
 		while(true)
 		{}
 	}
@@ -46,22 +47,17 @@ namespace std {
 }
 using arena_string = std::basic_string<char, std::char_traits<char>, BaremetalAllocator<char> >;
 
-class SimpleClass
-{
-public:
-  SimpleClass()
-  {
-    cout << "ctor\n";
-  }
-  ~SimpleClass()
-{
-cout << "dtor\n";
-}
+using arena_vector = std::vector<arena_string, BaremetalAllocator<arena_string> >;
 
-};
-static SimpleClass s;
 int main()
 {
+        arena_vector v;
+        v.push_back("hello");
+
+        for (size_t i = 0; i < v.size(); ++i)
+        {
+           cout << v[i].c_str() << "\n";
+        }
 	arena_string h("hello this fucking worldsjdkkkkkkkkkkkkkk\n");
 	cout << h.c_str();
 

@@ -3,18 +3,17 @@
 
 #include <array>
 #include <cstddef>
+#include <cstdint>
 
 #include "basic_stream.h"
 
-extern char heap_start;
-extern char heap_end;  
+extern std::uintptr_t heap_start;
+extern std::uintptr_t heap_end;  
 
-template <class T>
 class BitMapArena
 {
 public:
-	using value_type = T;
-	using pointer = T*;
+	using pointer = void*;
 	using size_type = std::size_t;
 
 	static const size_type BlockSize = 64;
@@ -36,24 +35,24 @@ public:
 		if (n > BlockSize)
 			return nullptr;
 
-		pointer address = nullptr;
+		pointer address = (pointer)nullptr;
 		for (size_t i = m_startSearchIndex; i < m_blocksNum; ++i)
                 {
                     if(!m_bitMap[i])
                     {
-                        address = m_startAddress + i * BlockSize;
+                        address = (pointer)((std::uintptr_t)m_startAddress + i * BlockSize);
                         m_bitMap[i] = true;
                         m_startSearchIndex = ++i;
                         break;
                     }
                 }
-		return address;
+		return (pointer)address;
 	}
 
 	void deallocate(pointer p, size_type n)
 	{
                 cout <<  "deallocate \n";
-		size_t index = (p - m_startAddress) / BlockSize;
+		size_t index = ((std::uintptr_t)p - (std::uintptr_t)m_startAddress) / BlockSize;
                 m_bitMap[index] = false;
                 m_startSearchIndex = index;
 	}

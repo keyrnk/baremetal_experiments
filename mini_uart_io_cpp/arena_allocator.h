@@ -11,39 +11,25 @@ public:
 	using value_type = T;	
 	using pointer = T*;
 	using const_pointer = const T*;
-	using reference = T&;
-	using const_reference = const T&;
-	using size_type = std::size_t;
-	using difference_type = std::ptrdiff_t;
-
-	using propagate_on_container_copy_assignment = std::true_type;
-	using propagate_on_container_move_assignment = std::true_type;
-	using propagate_on_container_swap = std::true_type;
-
-	template <class U>
-	struct rebind {
-		typedef ArenaAllocator<U, AllocationStrategy> other;	
-	};
+        using size_type = std::size_t;
 
 	static AllocationStrategy arena;
 
 public:
 	ArenaAllocator() noexcept = default;
-	ArenaAllocator(const ArenaAllocator& other) noexcept = default;
 	
 	template<typename U>
 	ArenaAllocator(const ArenaAllocator<U, AllocationStrategy>& other) noexcept {};	
-	~ArenaAllocator() noexcept = default;
 
 public:
-	static pointer allocate(size_type n, ArenaAllocator<T, AllocationStrategy>::const_pointer hint = 0)
+	static pointer allocate(size_type n, const_pointer hint = 0)
 	{
-		return arena.allocate(n);
+		return static_cast<pointer>(arena.allocate(n * sizeof(T)));
 	}
 
 	static void deallocate(pointer p, size_type n)
 	{
-		arena.deallocate(p, n);
+		arena.deallocate(p, n * sizeof(T));
 	}
 
 };
@@ -64,5 +50,5 @@ bool operator != (const ArenaAllocator<T1, AllocationStrategy>& first, const Are
 }
 
 template <class T>
-using BaremetalAllocator = ArenaAllocator<T, BitMapArena<T> >;
+using BaremetalAllocator = ArenaAllocator<T, BitMapArena >;
 #endif
