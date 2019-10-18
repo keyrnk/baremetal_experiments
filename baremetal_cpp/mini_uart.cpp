@@ -19,8 +19,6 @@
 #include <cstddef>
 #include "mini_uart.h"
 
-bool MiniUartIO::m_isInitialized = false;
-
 void MiniUartIO::WriteToRegister(volatile unsigned int* reg, const unsigned int val)
 {
 	*reg = val;
