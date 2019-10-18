@@ -1,9 +1,6 @@
 #ifndef __BASIC_STREAM_H_
 #define __BASIC_STREAM_H_
 
-#include <string>
-#include "mini_uart.h"
-
 template <class UartImpl>
 UartImpl& GetInstance()
 {
@@ -37,9 +34,5 @@ public:
 		return *this;
 	}
 }; 
-
-
-typedef BasicStream<char, std::char_traits<char>, MiniUartIO> IOStream;
-IOStream cout;
 
 #endif

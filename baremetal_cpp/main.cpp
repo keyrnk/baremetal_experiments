@@ -5,6 +5,10 @@
 #include <string_view>
 #include "arena_allocator.h"
 #include "basic_stream.h"
+#include "mini_uart.h"
+
+typedef BasicStream<char, std::char_traits<char>, MiniUartIO> IOStream;
+IOStream cout;
 
 using arena_string = std::basic_string<char, std::char_traits<char>, BaremetalAllocator<char> >;
 
