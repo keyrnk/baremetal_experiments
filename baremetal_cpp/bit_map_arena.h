@@ -24,14 +24,14 @@ public:
             , m_blocksNum((&heap_end - &heap_start) / BlockSize)
             , m_startSearchIndex(0)
         {
-             cout <<  "bit map arena ctor\n";
+            // cout <<  "bit map arena ctor\n";
              m_bitMap.fill(false);
         }
 
 public:
 	pointer allocate(size_type n)
 	{
-		cout <<  "allocate index " << (int)m_startSearchIndex << "\n" ;
+		//cout <<  "allocate index " << (int)m_startSearchIndex << "\n" ;
 		if (n > BlockSize)
 			return nullptr;
 
@@ -51,7 +51,7 @@ public:
 
 	void deallocate(pointer p, size_type n)
 	{
-                cout <<  "deallocate \n";
+                //cout <<  "deallocate \n";
 		size_t index = ((std::uintptr_t)p - (std::uintptr_t)m_startAddress) / BlockSize;
                 m_bitMap[index] = false;
                 m_startSearchIndex = index;

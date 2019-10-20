@@ -4,11 +4,18 @@
 #include <string>
 #include "mini_uart.h"
 
-template <class CharT, class Traits>
+template <class UartImpl>
+UartImpl& GetInstance()
+{
+	static UartImpl uart;
+	return uart;
+}
+
+template <class CharT, class Traits, class UartImpl>
 class BasicStream
 {
 public:
-	using stream_type = BasicStream<CharT, Traits>;
+	using stream_type = BasicStream<CharT, Traits, UartImpl>;
 
 public:
 	BasicStream() = default;
@@ -16,23 +23,23 @@ public:
 public:
 	stream_type& operator << (const char ch) noexcept
 	{
-		MiniUartIO::GetInstance().PutChar(ch);
+		GetInstance<UartImpl>().PutChar(ch);
 		return *this;
 	}
 	stream_type& operator << (const char* s) noexcept
 	{
-		MiniUartIO::GetInstance().PutStr(s);
+		GetInstance<UartImpl>().PutStr(s);
 		return *this;
 	}
 	stream_type& operator << (const int n) noexcept
 	{	
-		MiniUartIO::GetInstance().PutInt(n);
+		GetInstance<UartImpl>().PutInt(n);
 		return *this;
 	}
 }; 
 
 
-typedef BasicStream<char, std::char_traits<char>> IOStream;
+typedef BasicStream<char, std::char_traits<char>, MiniUartIO> IOStream;
 IOStream cout;
 
 #endif

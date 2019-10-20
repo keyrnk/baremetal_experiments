@@ -9,15 +9,9 @@ bool __cxa_guard_release();
 class MiniUartIO
 {
 public:
-	static MiniUartIO& GetInstance()
+	MiniUartIO()
 	{
-		static MiniUartIO uart;
-		if (!m_isInitialized)
-		{
-			InitMiniUart();
-			m_isInitialized = true;
-		}
-		return uart;
+		InitMiniUart();
 	}
 public:
 	char GetChar() ;
@@ -33,12 +27,8 @@ private:
 	static void WaitForRegisterReady() noexcept;
 
 private:
-	MiniUartIO() = default;
-	~MiniUartIO() = default;
 	MiniUartIO(const MiniUartIO&) = delete;
 	MiniUartIO& operator = (const MiniUartIO&) = delete;
-private:
-	static bool m_isInitialized;
 };
 
 #endif

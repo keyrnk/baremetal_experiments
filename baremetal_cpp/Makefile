@@ -3,6 +3,7 @@ INC_PATH = -I/Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/aarch
 PATH = /usr/local/Cellar/llvm/8.0.0_1/bin/
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
+
 CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nodefaultlibs -fno-cxx-exceptions $(INC_PATH)
 
 all: clean kernel8.img
