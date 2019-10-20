@@ -4,7 +4,7 @@ PATH = /usr/local/Cellar/llvm/8.0.0_1/bin/
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
 
-CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nodefaultlibs -fno-cxx-exceptions $(INC_PATH)
+CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nodefaultlibs -fno-cxx-exceptions -fno-threadsafe-statics $(INC_PATH)
 
 all: clean kernel8.img
 
