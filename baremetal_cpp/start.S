@@ -6,7 +6,7 @@
 .global interrupt_vector
 
 interrupt_vector:   
-   ldr x5, reset_handler_ptr
+/*   ldr x5, reset_handler_ptr
    br x5
    ldr x5, undefined_handler_ptr
    br x5
@@ -31,7 +31,7 @@ data_handler_ptr: .dword hang
 unused_handler_ptr: .dword hang
 irq_handler_ptr: .dword hang
 fiq_handler_ptr: .dword hang
-
+*/
 start:
     // read cpu id, stop slave cores
     mrs     x1, mpidr_el1
@@ -43,7 +43,7 @@ start:
 
 continue: 
     // cpu id == 0
-    msr DAIFClr, #15
+ /*   msr DAIFClr, #15
 
     ldr x0,=interrupt_vector
     mov x1,#0x0000
@@ -52,10 +52,10 @@ continue:
 
     ldp x2, x9, [x0], #64
     stp x2, x9, [x1], #64
-
+*/
     //set interrupt stacks
     ldr x0, =stack_start
-    mov x1, #0x1000
+/*    mov x1, #0x1000
 
     msr DAIFSet, #2
     mov sp,x0
@@ -66,7 +66,7 @@ continue:
     sub x0,x0,x1
 
     msr DAIFClr, #15
-    
+ */
     // set stack
     mov sp,x0
 
