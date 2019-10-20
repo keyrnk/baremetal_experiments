@@ -1,4 +1,6 @@
-INC_PATH = -I/Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/aarch64-elf/include/c++/8.3.0 -I/Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/aarch64-elf/include/c++/8.3.0/aarch64-elf -I/Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/aarch64-elf/include -I/Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/lib/gcc/aarch64-elf/8.3.0/include
+INC_ROOT = /Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/
+
+INC_PATH = -I$(INC_ROOT)aarch64-elf/include/c++/8.3.0 -I$(INC_ROOT)aarch64-elf/include/c++/8.3.0/aarch64-elf -I$(INC_ROOT)aarch64-elf/include -I$(INC_ROOT)lib/gcc/aarch64-elf/8.3.0/include
 
 PATH = /usr/local/Cellar/llvm/8.0.0_1/bin/
 SRCS = $(wildcard *.cpp)
@@ -18,8 +20,8 @@ kernel8.img: start.o $(OBJS)
 	$(PATH)ld.lld -m aarch64elf -nostdlib start.o $(OBJS) -T load.ld -o kernel8.elf
 	$(PATH)llvm-objcopy -O binary kernel8.elf kernel8.img
 
-clean:
-	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
+clean: 
+	rm *.o >/dev/null 2>/dev/null || true
 
 run:
 	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial null -serial stdio
