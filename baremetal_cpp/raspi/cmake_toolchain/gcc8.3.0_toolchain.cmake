@@ -17,6 +17,6 @@ set(CMAKE_C_FLAGS_INIT "-Wall -O2 -nostdlib -fpermissive" CACHE STRING "" FORCE)
 
 set(CMAKE_CXX_FLAGS_INIT "-Wall -O2 -nostdlib -fno-exceptions -fno-rtti -fno-threadsafe-statics -fpermissive" CACHE STRING "" FORCE)
 
-set(CMAKE_EXE_LINKER_FLAGS_INIT "-T ${PROJECT_SOURCE_DIR}/load.ld" CACHE STRING "" FORCE)
+set(CMAKE_EXE_LINKER_FLAGS_INIT "-T ${PROJECT_SOURCE_DIR}/raspi/load.ld" CACHE STRING "" FORCE)
 
 
