@@ -60,17 +60,17 @@ SECTIONS
     *(COMMON)
     . = ALIGN (8);
     _bss_end = ABSOLUTE(.);
-    _heap_start = ABSOLUTE(.);
-    _heap_end = ORIGIN(dram0_0_seg) + LENGTH(dram0_0_seg);
+    heap_start = ABSOLUTE(.);
+    heap_end = ORIGIN(dram0_0_seg) + LENGTH(dram0_0_seg);
   } >dram0_0_seg :dram0_0_bss_phdr
 
-  init.array :
+  init.array : ALIGN(4)
   {
     init_array_start = .;
     *(.init_array)
     *(.init_array.*)
     init_array_end = .;
-  } >dram0_0_seg :dram0_0_bss_phdr
+  } >iram1_0_seg :iram1_0_phdr
   
   .text : ALIGN(4)
   {

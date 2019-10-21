@@ -9,7 +9,7 @@ READELF = $(TOOLCHAIN_PATH)/xtensa-lx106-elf-readelf
 INCLUDE_DIR = ../core
 CXXFLAGS = -mlongcalls -fno-exceptions -fno-unwind-tables -fno-threadsafe-statics -fno-rtti -Wall -g3 -std=c++11 -I$(INCLUDE_DIR)
 LDLIBS = -nostdlib
-LDFLAGS = -T./karina_main.ld $(CXXFLAGS)
+LDFLAGS = -T./load.ld $(CXXFLAGS)
 
 SRCS = $(wildcard *.cpp) \
        $(wildcard ../core/*.cpp)

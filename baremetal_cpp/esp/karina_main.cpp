@@ -1,47 +1,48 @@
 #include "leds.h"
 #include "uart.h"
-#include "karina_arena.h"
-#include "karina_main.h"
+#include <arena_allocator.h>
+#include "main.h"
 #include <basic_stream.h>
 #include <static_objects.h>
 #include <string>
 
-//void __cxa_guard_acquire()
-//{
-//}
-
 using Stream = BasicStream<char, std::char_traits<char>, Uart>;
 Stream cout;
 
-class StaticExample
-{
-public:
-    StaticExample()
-    {
-	cout << "static ctor\n";
-    }
-};
-
-StaticExample ex;
+using arena_string = std::basic_string<char, std::char_traits<char>, BaremetalAllocator<char> >;
 
 void testAllocator(void)
 {
-    ArenaAllocator<char> charAllocator;
+    BaremetalAllocator<char> charAllocator;
 
     {
         arena_string s(16, 's', charAllocator);
-        arena_string t = std::move(s);
-        t.append("ddd");
+        //arena_string t = std::move(s);
+        //t.append("ddd");
         cout << s.c_str() << '\n';
-        cout << t.c_str() << '\n';
+        //cout << t.c_str() << '\n';
     }
 
-    arena_string s(8, 'r', charAllocator);
-    s.find('g');
-    cout << s.c_str() << '\n';
+   // arena_string s(8, 'r', charAllocator);
+   // s.find('g');
+   // cout << s.c_str() << '\n';
 }
 
-    
+class Simple
+{
+public:
+	Simple()
+	{
+		cout << "global ctor\n";
+	}
+	
+	void func()
+	{
+		cout << "simple func\n";
+	}
+} ;
+
+Simple simple;
 
 extern "C"
 void karina_main(void)
@@ -50,7 +51,7 @@ void karina_main(void)
     init_leds();
     StaticInitialize();
 
-
+	simple.func();
     cout << "\n[Karina C++ version 0.1]\n\n";
     testAllocator();
 
