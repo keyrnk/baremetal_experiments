@@ -15,7 +15,7 @@ using arena_string = std::basic_string<char, std::char_traits<char>, BaremetalAl
 using arena_vector = std::vector<arena_string, BaremetalAllocator<arena_string> >;
 
 extern "C"
-void main()
+int main()
 {
 	arena_string greeting("Why should I stay");
 	greeting.append(" here?");
@@ -31,4 +31,5 @@ void main()
         {
            cout << word.c_str() << "\n";
         }
+	return 0;
 }
