@@ -2,6 +2,20 @@
 #include <cstdint>
 
 extern "C"
+int memcmp( const void* lhs, const void* rhs, std::size_t n )
+{
+    const unsigned char* lhsC = static_cast<const unsigned char*>(lhs);
+    const unsigned char* rhsC = static_cast<const unsigned char*>(rhs);
+
+    for ( ; n--; lhsC++, rhsC++) {
+	if ( *lhsC != *rhsC) {
+	    return (*lhsC-*rhsC);
+	}
+    }
+    return 0;
+}
+
+extern "C"
 void* memcpy(void* dst, const void* src, std::size_t n)
 {
 	char* dstC = static_cast<char*>(dst);
