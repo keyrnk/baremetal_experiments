@@ -28,22 +28,6 @@ void testAllocator(void)
    // cout << s.c_str() << '\n';
 }
 
-class Simple
-{
-public:
-	Simple()
-	{
-		cout << "global ctor\n";
-	}
-	
-	void func()
-	{
-		cout << "simple func\n";
-	}
-} ;
-
-Simple simple;
-
 extern "C"
 void karina_main(void)
 {
@@ -51,7 +35,6 @@ void karina_main(void)
     init_leds();
     StaticInitialize();
 
-	simple.func();
     cout << "\n[Karina C++ version 0.1]\n\n";
     testAllocator();
 

@@ -27,10 +27,10 @@ SECTIONS
     *(.gnu.version_r)
     *(.eh_frame)
     /*  C++ constructor and destructor tables, properly ordered:  */
-    KEEP (*crtbegin.o(.ctors))
-    KEEP (*(EXCLUDE_FILE (*crtend.o) .ctors))
-    KEEP (*(SORT(.ctors.*)))
-    KEEP (*(.ctors))
+	. = ALIGN(4);
+    init_array_start = ABSOLUTE(.);
+    KEEP (*(EXCLUDE_FILE (*crtend.* *crtbegin.*) .ctors .ctors.*))
+    init_array_end = ABSOLUTE(.);
     KEEP (*crtbegin.o(.dtors))
     KEEP (*(EXCLUDE_FILE (*crtend.o) .dtors))
     KEEP (*(SORT(.dtors.*)))
@@ -63,14 +63,6 @@ SECTIONS
     heap_start = ABSOLUTE(.);
     heap_end = ORIGIN(dram0_0_seg) + LENGTH(dram0_0_seg);
   } >dram0_0_seg :dram0_0_bss_phdr
-
-  init.array : ALIGN(4)
-  {
-    init_array_start = .;
-    *(.init_array)
-    *(.init_array.*)
-    init_array_end = .;
-  } >iram1_0_seg :iram1_0_phdr
   
   .text : ALIGN(4)
   {
