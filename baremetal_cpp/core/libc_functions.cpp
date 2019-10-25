@@ -61,3 +61,23 @@ void *memchr (const void *arr, int c, size_t n)
          return 0;
 }
 
+extern "C"
+void* memmove (void* dest, const void* src, unsigned int len)
+{
+    char *d = (char*)dest;
+    const char *s = (const char*)src;
+    if (d < s)
+        while (len--)
+            *d++ = *s++;
+    else
+    {
+        const char *lasts = s + (len-1);
+        char *lastd = d + (len-1);
+        while (len--)
+            *lastd-- = *lasts--;
+    }
+    return dest;
+}
+
+
+

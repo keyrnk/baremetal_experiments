@@ -1,12 +1,21 @@
 set(TARGET_NAME esp)
 
-set(SOURCES 
-	karina_main.cpp)
+add_executable(${TARGET_NAME}
+               karina_main.cpp)
 
-add_executable(${TARGET_NAME} ${SOURCES})
+target_link_libraries(${TARGET_NAME} core)
 
-add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
-		COMMAND ${CMAKE_READELF} -a ${TARGET_NAME} > ${TARGET_NAME}.elf
-		COMMAND python ${ESPTOOL} elf2image ${TARGET_NAME}.elf)
+set_target_properties(${TARGET_NAME} PROPERTIES LINK_DEPENDS "${LINKER_SCRIPT}")
 
-#add_custom_target(run COMMAND qemu-system-aarch64 -M raspi3 -kernel ${IMAGE_NAME} -serial null -serial stdio)
+add_custom_target(${TARGET_NAME}-0x00000.bin
+                  COMMAND python ${ESPTOOL} elf2image ${TARGET_NAME}
+                  COMMAND ${READELF} -a ${TARGET_NAME} > ${TARGET_NAME}.elf
+                  DEPENDS ${TARGET_NAME})
+
+add_custom_target(flash
+                  COMMAND python ${ESPTOOL} write_flash 0 ${TARGET_NAME}-0x00000.bin
+                  DEPENDS ${TARGET_NAME}-0x00000.bin)
+
+add_custom_target(term
+                  COMMAND python -m serial.tools.miniterm --dtr=0 --rts=0 /dev/tty.usbserial-A50285BI 74880)
+
