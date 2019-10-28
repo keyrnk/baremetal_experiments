@@ -1,27 +1,53 @@
-INC_ROOT = /Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/
+#
+# Copyright (C) 2018 bzt (bztsrc@github)
+#
+# Permission is hereby granted, free of charge, to any person
+# obtaining a copy of this software and associated documentation
+# files (the "Software"), to deal in the Software without
+# restriction, including without limitation the rights to use, copy,
+# modify, merge, publish, distribute, sublicense, and/or sell copies
+# of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be
+# included in all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+# DEALINGS IN THE SOFTWARE.
+#
+#
 
-INC_PATH = -I$(INC_ROOT)aarch64-elf/include/c++/8.3.0 -I$(INC_ROOT)aarch64-elf/include/c++/8.3.0/aarch64-elf -I$(INC_ROOT)aarch64-elf/include -I$(INC_ROOT)lib/gcc/aarch64-elf/8.3.0/include
-
-PATH = /usr/local/Cellar/llvm/8.0.0_1/bin/
+COMPILER_PATH = /home/user/opt/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/bin/
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
-
-CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nodefaultlibs -fno-cxx-exceptions -fno-threadsafe-statics $(INC_PATH)
+# CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
+#CFLAGS = -Wall -O2 -ffreestanding -nostartfiles -nostdlib
+CFLAGS = -Wall -O2 -nostdlib -fno-exceptions -fno-rtti -fno-threadsafe-statics -fpermissive
 
 all: clean kernel8.img
 
 start.o: start.S
-	$(PATH)clang++ --target=aarch64-elf $(CFLAGS) -c start.S -o start.o
+	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c start.S -o start.o
+	#aarch64-elf-g++ $(CFLAGS) -c start.S -o start.o
 
 %.o: %.cpp
-	$(PATH)clang++ --target=aarch64-elf $(CFLAGS) -c $< -o $@
+	#aarch64-elf-g++ $(CFLAGS) -c $< -o $@
+	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c $< -o $@
 
 kernel8.img: start.o $(OBJS)
-	$(PATH)ld.lld -m aarch64elf -nostdlib start.o $(OBJS) -T load.ld -o kernel8.elf
-	$(PATH)llvm-objcopy -O binary kernel8.elf kernel8.img
+	$(COMPILER_PATH)aarch64-elf-ld -nostdlib -nostartfiles start.o $(OBJS) -T load.ld -o kernel8.elf
+	$(COMPILER_PATH)aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
+	#aarch64-elf-ld -nostdlib -nostartfiles start.o $(OBJS) -T load.ld -o kernel8.elf
+	#aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
 
-clean: 
-	rm *.o >/dev/null 2>/dev/null || true
+clean:
+	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
 
 run:
 	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial null -serial stdio
