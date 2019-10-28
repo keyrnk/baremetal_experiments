@@ -1,19 +1,19 @@
-#ifndef __ARENA_ALLOCATOR_H_
-#define __ARENA_ALLOCATOR_H_
+#ifndef __BAREMETAL_ALLOCATOR_H_
+#define __BAREMETAL_ALLOCATOR_H_
 
 #include <cstddef>
-#include "bit_map_arena.h"
+#include "bit_map_heap.h"
 
 class Base
 {
 protected:
-	static BitMapArena arena;
+	static BitMapHeap m_heap;
 };
 
-BitMapArena Base::arena;
+BitMapHeap Base::m_heap;
 
 template <class T>
-class ArenaAllocator : public Base
+class BaremetalAllocator : public Base
 {
 public:
 	using value_type = T;
@@ -29,40 +29,38 @@ public:
 
 	template <typename U>
 	struct rebind {
-		typedef ArenaAllocator<U> other;
+		typedef BaremetalAllocator<U> other;
 	};
 
 public:
-	ArenaAllocator() noexcept = default;
+	BaremetalAllocator() noexcept = default;
 	
 	template<typename U>
-	ArenaAllocator(const ArenaAllocator<U>& other) noexcept {};	
+	BaremetalAllocator(const BaremetalAllocator<U>& other) noexcept {};	
 
 public:
 	static pointer allocate(size_type n, const_pointer hint = 0)
 	{
-		return static_cast<pointer>(arena.allocate(n * sizeof(T)));
+		return static_cast<pointer>(m_heap.allocate(n * sizeof(T)));
 	}
 
 	static void deallocate(pointer p, size_type n)
 	{
-		arena.deallocate(p, n * sizeof(T));
+		m_heap.deallocate(p, n * sizeof(T));
 	}
 
 };
 
 template <class T1, class T2>
-bool operator == (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
+bool operator == (const BaremetalAllocator<T1>& first, const BaremetalAllocator<T2>& second) noexcept
 {
 	return true;
 }
 
 template <class T1, class T2>
-bool operator != (const ArenaAllocator<T1>& first, const ArenaAllocator<T2>& second) noexcept
+bool operator != (const BaremetalAllocator<T1>& first, const BaremetalAllocator<T2>& second) noexcept
 {
 	return false;
 }
 
-template <class T>
-using BaremetalAllocator = ArenaAllocator<T>;
 #endif

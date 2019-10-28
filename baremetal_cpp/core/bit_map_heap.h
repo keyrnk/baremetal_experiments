@@ -1,5 +1,5 @@
-#ifndef __BIT_MAP_ARENA_H_
-#define __BIT_MAP_ARENA_H_
+#ifndef __BIT_MAP_HEAP_H_
+#define __BIT_MAP_HEAP_H_
 
 #include <array>
 #include <cstddef>
@@ -11,16 +11,16 @@
 extern std::uintptr_t heap_start;
 extern std::uintptr_t heap_end;  
 
-class BitMapArena
+class BitMapHeap
 {
 public:
 	using pointer = void*;
 	using size_type = std::size_t;
 
-	static const size_type BlockSize = 64;
-	static const size_type MaxHeapSize = 1024;
+	static const size_type BlockSize = 256;
+	static const size_type MaxHeapSize = 1024 * 1024;
 public:
-	BitMapArena()
+	BitMapHeap()
             : m_startAddress(&heap_start)
             , m_blocksNum((&heap_end - &heap_start) / BlockSize)
             , m_startSearchIndex(0)
