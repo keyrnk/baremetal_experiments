@@ -6,6 +6,7 @@
 #include <cstdint>
 
 #include "basic_stream.h"
+#include "mock_exceptions.h"
 
 extern std::uintptr_t heap_start;
 extern std::uintptr_t heap_end;  
@@ -24,16 +25,14 @@ public:
             , m_blocksNum((&heap_end - &heap_start) / BlockSize)
             , m_startSearchIndex(0)
         {
-            // cout <<  "bit map arena ctor\n";
              m_bitMap.fill(false);
         }
 
 public:
 	pointer allocate(size_type n)
 	{
-		//cout <<  "allocate index " << (int)m_startSearchIndex << "\n" ;
 		if (n > BlockSize)
-			return nullptr;
+			std::__throw_bad_alloc("bad_alloc");
 
 		pointer address = (pointer)nullptr;
 		for (size_t i = m_startSearchIndex; i < m_blocksNum; ++i)
@@ -51,7 +50,6 @@ public:
 
 	void deallocate(pointer p, size_type n)
 	{
-                //cout <<  "deallocate \n";
 		size_t index = ((std::uintptr_t)p - (std::uintptr_t)m_startAddress) / BlockSize;
                 m_bitMap[index] = false;
                 m_startSearchIndex = index;

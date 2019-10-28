@@ -4,14 +4,22 @@
 #include <cstddef>
 #include "bit_map_arena.h"
 
+class Base
+{
+protected:
+	static BitMapArena arena;
+};
 
-static BitMapArena arena;
+BitMapArena Base::arena;
 
 template <class T>
-class ArenaAllocator
+class ArenaAllocator : public Base
 {
 public:
-	using value_type = T;	
+	using value_type = T;
+
+//gcc 4.8 for esp8266 doesn't have full support for C++11 allocator
+//and requires all using below and rebind	
 	using pointer = T*;
 	using const_pointer = const T*;
         using size_type = std::size_t;

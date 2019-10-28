@@ -12,7 +12,7 @@ PHDRS
 }
 
 /*  Default entry point:  */
-ENTRY(karina_main)
+ENTRY(my_main)
 
 SECTIONS
 {
