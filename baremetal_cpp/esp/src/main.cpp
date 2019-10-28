@@ -3,20 +3,20 @@
 #include <arena_allocator.h>
 #include "main.h"
 #include <basic_stream.h>
-#include <static_objects.h>
+#include <global_objects.h>
 #include <string>
 #include <test_function.h>
 
 extern "C"
-void karina_main(void)
+void main(void)
 {
     mem_clr_bss();
     init_leds();
-    StaticInitialize();
+    GlobalInitialize();
 
     using IOStream = BasicStream<char, std::char_traits<char>, Uart>;
     IOStream cout;
-    cout << "\n[Karina C++ version 0.1]\n\n";
+    cout << "\n[ESP8266 C++ version 0.1]\n\n";
     
     TestFunction<IOStream>(cout);
     

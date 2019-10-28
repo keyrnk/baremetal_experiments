@@ -4,7 +4,7 @@ extern void(*init_array_start[])(void);
 extern void(*init_array_end[])(void);
 
 extern "C"
-void StaticInitialize()
+void GlobalInitialize()
 {
     size_t count = init_array_end - init_array_start;
     for (size_t i = 0; i < count; ++i)
