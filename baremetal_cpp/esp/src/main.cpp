@@ -8,7 +8,7 @@
 #include <test_function.h>
 
 extern "C"
-void main(void)
+void my_main(void)
 {
     mem_clr_bss();
     init_leds();
