@@ -1,6 +1,5 @@
 #include "leds.h"
 #include "uart.h"
-#include <arena_allocator.h>
 #include "main.h"
 #include <basic_stream.h>
 #include <global_objects.h>
