@@ -26,25 +26,20 @@
 COMPILER_PATH = /home/user/opt/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/bin/
 SRCS = $(wildcard *.cpp)
 OBJS = $(SRCS:.cpp=.o)
-# CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nostartfiles
-#CFLAGS = -Wall -O2 -ffreestanding -nostartfiles -nostdlib
+
 CFLAGS = -Wall -O2 -nostdlib -fno-exceptions -fno-rtti -fno-threadsafe-statics -fpermissive
 
 all: clean kernel8.img
 
 start.o: start.S
 	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c start.S -o start.o
-	#aarch64-elf-g++ $(CFLAGS) -c start.S -o start.o
 
 %.o: %.cpp
-	#aarch64-elf-g++ $(CFLAGS) -c $< -o $@
 	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c $< -o $@
 
 kernel8.img: start.o $(OBJS)
 	$(COMPILER_PATH)aarch64-elf-ld -nostdlib -nostartfiles start.o $(OBJS) -T load.ld -o kernel8.elf
 	$(COMPILER_PATH)aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
-	#aarch64-elf-ld -nostdlib -nostartfiles start.o $(OBJS) -T load.ld -o kernel8.elf
-	#aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
 
 clean:
 	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
