@@ -24,25 +24,46 @@
 #
 
 COMPILER_PATH = /home/user/opt/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/bin/
-SRCS = $(wildcard *.cpp)
-OBJS = $(SRCS:.cpp=.o)
 
-CFLAGS = -Wall -O2 -nostdlib -fno-exceptions -fno-rtti -fno-threadsafe-statics -fpermissive
+INCLUDE_DIR = ../core/
+CFLAGS = -Wall -O2 -nostdlib -fno-exceptions -fno-rtti -fno-threadsafe-statics -fpermissive -I$(INCLUDE_DIR)
 
-all: clean kernel8.img
+RASPI_FOLDER = src
+CORE_FOLDER = ../core
 
-start.o: start.S
-	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c start.S -o start.o
+RASPI_SRC = $(wildcard $(RASPI_FOLDER)/*.cpp)
+CORE_SRC = $(wildcard $(CORE_FOLDER)/*.cpp)
+	   
+ODIR=build
+RASPI_OBJS_ = $(RASPI_SRC:.cpp=.o)
+CORE_OBJS_ = $(CORE_SRC:.cpp=.o)
 
-%.o: %.cpp
+RASPI_OBJS= $(patsubst %,$(ODIR)/%,$(notdir $(RASPI_OBJS_))) 
+CORE_OBJS= $(patsubst %,$(ODIR)/%,$(notdir $(CORE_OBJS_)))
+
+all: directories $(ODIR)/kernel8.img
+
+MKDIR_P = mkdir -p
+
+directories: ${ODIR}
+${ODIR}: 
+	${MKDIR_P} ${ODIR}
+
+$(ODIR)/start.o: src/start.S
+	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c src/start.S -o $(ODIR)/start.o
+
+$(ODIR)/%.o: $(RASPI_FOLDER)/%.cpp
 	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c $< -o $@
 
-kernel8.img: start.o $(OBJS)
-	$(COMPILER_PATH)aarch64-elf-ld -nostdlib -nostartfiles start.o $(OBJS) -T load.ld -o kernel8.elf
-	$(COMPILER_PATH)aarch64-elf-objcopy -O binary kernel8.elf kernel8.img
+$(ODIR)/%.o: $(CORE_FOLDER)/%.cpp
+	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c $< -o $@
+
+$(ODIR)/kernel8.img: $(ODIR)/start.o $(RASPI_OBJS) $(CORE_OBJS)
+	$(COMPILER_PATH)aarch64-elf-ld -nostdlib -nostartfiles $(ODIR)/start.o $(RASPI_OBJS) $(CORE_OBJS) -T load.ld -o $(ODIR)/kernel8.elf
+	$(COMPILER_PATH)aarch64-elf-objcopy -O binary $(ODIR)/kernel8.elf $(ODIR)/kernel8.img
 
 clean:
-	rm kernel8.elf *.o >/dev/null 2>/dev/null || true
+	rm -r ${ODIR}
 
 run:
-	qemu-system-aarch64 -M raspi3 -kernel kernel8.img -serial null -serial stdio
+	qemu-system-aarch64 -M raspi3 -kernel $(ODIR)/kernel8.img -serial null -serial stdio
