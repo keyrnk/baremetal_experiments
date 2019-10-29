@@ -1,7 +1,7 @@
 set(TARGET_NAME esp)
 
 add_executable(${TARGET_NAME}
-               karina_main.cpp)
+               src/main.cpp)
 
 target_link_libraries(${TARGET_NAME} core)
 

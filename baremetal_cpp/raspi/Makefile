@@ -1,32 +1,12 @@
-#
-# Copyright (C) 2018 bzt (bztsrc@github)
-#
-# Permission is hereby granted, free of charge, to any person
-# obtaining a copy of this software and associated documentation
-# files (the "Software"), to deal in the Software without
-# restriction, including without limitation the rights to use, copy,
-# modify, merge, publish, distribute, sublicense, and/or sell copies
-# of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be
-# included in all copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-# EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-# MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-# NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-# HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-# WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-# DEALINGS IN THE SOFTWARE.
-#
-#
+INC_ROOT = /Users/karina/Projects/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/
 
-COMPILER_PATH = /home/user/opt/gcc-arm-8.3-2019.03-x86_64-aarch64-elf/bin/
+STL_INC_PATH = -I$(INC_ROOT)aarch64-elf/include/c++/8.3.0 -I$(INC_ROOT)aarch64-elf/include/c++/8.3.0/aarch64-elf -I$(INC_ROOT)aarch64-elf/include -I$(INC_ROOT)lib/gcc/aarch64-elf/8.3.0/include
 
-INCLUDE_DIR = ../core/
-CFLAGS = -Wall -O2 -nostdlib -fno-exceptions -fno-rtti -fno-threadsafe-statics -fpermissive -I$(INCLUDE_DIR)
+PROJECT_INC_PATH = -I../core
+
+PATH = /usr/local/Cellar/llvm/8.0.0_1/bin/
+
+CFLAGS = -Wall -O2 -ffreestanding -nostdinc -nostdlib -nodefaultlibs -fno-cxx-exceptions -fno-threadsafe-statics $(STL_INC_PATH) $(PROJECT_INC_PATH)
 
 RASPI_FOLDER = src
 CORE_FOLDER = ../core
@@ -50,19 +30,19 @@ ${ODIR}:
 	${MKDIR_P} ${ODIR}
 
 $(ODIR)/start.o: src/start.S
-	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c src/start.S -o $(ODIR)/start.o
+	$(PATH)clang++ --target=aarch64-elf $(CFLAGS) -c $(RASPI_FOLDER)/start.S -o $(ODIR)/start.o
 
 $(ODIR)/%.o: $(RASPI_FOLDER)/%.cpp
-	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c $< -o $@
+	$(PATH)clang++ --target=aarch64-elf $(CFLAGS) -c $< -o $@
 
 $(ODIR)/%.o: $(CORE_FOLDER)/%.cpp
-	$(COMPILER_PATH)aarch64-elf-g++ $(CFLAGS) -c $< -o $@
+	$(PATH)clang++ --target=aarch64-elf $(CFLAGS) -c $< -o $@
 
 $(ODIR)/kernel8.img: $(ODIR)/start.o $(RASPI_OBJS) $(CORE_OBJS)
-	$(COMPILER_PATH)aarch64-elf-ld -nostdlib -nostartfiles $(ODIR)/start.o $(RASPI_OBJS) $(CORE_OBJS) -T load.ld -o $(ODIR)/kernel8.elf
-	$(COMPILER_PATH)aarch64-elf-objcopy -O binary $(ODIR)/kernel8.elf $(ODIR)/kernel8.img
+	$(PATH)ld.lld -m aarch64elf -nostdlib $(ODIR)/start.o $(RASPI_OBJS) $(CORE_OBJS) -T load.ld -o $(ODIR)/kernel8.elf
+	$(PATH)llvm-objcopy -O binary $(ODIR)/kernel8.elf $(ODIR)/kernel8.img
 
-clean:
+clean: 
 	rm -r ${ODIR}
 
 run:

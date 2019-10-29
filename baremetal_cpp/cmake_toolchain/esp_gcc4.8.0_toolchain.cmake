@@ -2,7 +2,7 @@ set(CMAKE_SYSTEM_NAME "Generic")
 set(CMAKE_SYSTEM_VERSION 1)
 set(CMAKE_SYSTEM_PROCESSOR "ESP8266")
 
-set(ARDUINO_ESP8266_PATH "C:/Users/Dorozhkina/AppData/Local/Arduino15/packages/esp8266")
+set(ARDUINO_ESP8266_PATH "/Users/karina/Library/Arduino15/packages/esp8266")
 set(TOOLCHAIN_PATH "${ARDUINO_ESP8266_PATH}/tools/xtensa-lx106-elf-gcc/2.5.0-3-20ed2b9")
 set(ESPTOOL "${ARDUINO_ESP8266_PATH}/hardware/esp8266/2.5.2/tools/esptool/esptool.py")
 
