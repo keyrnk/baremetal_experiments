@@ -1,5 +1,5 @@
-#ifndef _KARINA_UART_H_
-#define _KARINA_UART_H_
+#ifndef _ESP8266_UART_H_
+#define _ESP8266_UART_H_
 
 #define UART_TX_FIFO     (*((volatile unsigned char *)0x60000000))
 #define UART_TXFIFO_LOAD (*((volatile unsigned char *)0x6000001E))
@@ -14,20 +14,20 @@ class Uart
 public:
     void PutChar(const unsigned char c) noexcept
     {
-	while (UART_TXFIFO_LOAD > 125); // Wait, do nothing
-	UART_TX_FIFO = c;
+        while (UART_TXFIFO_LOAD > 125); // Wait, do nothing
+        UART_TX_FIFO = c;
     }
 
     void PutStr(const char* s) noexcept
     {
-	while(*s != '\0')
-	{
-    	    if (*s == '\n')
-        	PutChar('\r');
+        while(*s != '\0')
+        {
+            if (*s == '\n')
+                PutChar('\r');
 
-    	    PutChar(*s);
-    	    s++;
-	}
+            PutChar(*s);
+            s++;
+        }
     }
 
     void PutInt(int i)
@@ -36,12 +36,13 @@ public:
 
     int CharsAvailable()
     {
-	return UART_RXFIFO_LOAD;
+        return UART_RXFIFO_LOAD;
     }
 
     inline static char GetChar()
     {
-	return UART_RX_FIFO;
+        return UART_RX_FIFO;
     }
 };
-#endif // _KARINA_UART_H_
+
+#endif // _ESP8266_UART_H_

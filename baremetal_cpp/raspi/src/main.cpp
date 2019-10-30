@@ -11,7 +11,8 @@ typedef BasicStream<char, std::char_traits<char>, MiniUartIO> IOStream;
 extern "C"
 int main()
 {
-	IOStream cout;
-	TestFunction(cout);
-	return 0;
+    IOStream cout;
+    TestFunction(cout);
+
+    return 0;
 }

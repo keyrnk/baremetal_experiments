@@ -18,110 +18,113 @@
 
 void WriteToRegister(volatile unsigned int* reg, const unsigned int val)
 {
-	*reg = val;
+    *reg = val;
 }
 
 void ReadFromRegister(volatile unsigned int* reg, unsigned int* val)
 {
-	*val = *reg;
+    *val = *reg;
 }
 
 static void SetUpGPIO(void)
 {
-	//alternate pin 14 and pin 15 to miniuart tx/rx mode
-	unsigned int reg;
-	ReadFromRegister(GPFSEL1_REG, &reg);
+    //alternate pin 14 and pin 15 to miniuart tx/rx mode
+    unsigned int reg;
+    ReadFromRegister(GPFSEL1_REG, &reg);
 
-	//clean pin 14 bits (12-14)
-	reg &= ~((7 << 12) | (7 << 15));
+    //clean pin 14 bits (12-14)
+    reg &= ~((7 << 12) | (7 << 15));
 
-	//set pin 14/15 alt5 function for tx1/rx1
-	reg |= (2 << 12);
-	reg |= (2 << 15);
+    //set pin 14/15 alt5 function for tx1/rx1
+    reg |= (2 << 12);
+    reg |= (2 << 15);
 
-	WriteToRegister(GPFSEL1_REG, reg);
+    WriteToRegister(GPFSEL1_REG, reg);
 
-	WriteToRegister(GPPUD_REG, 0);
+    WriteToRegister(GPPUD_REG, 0);
 
-	//according to broadcom documentation we need to wait 150 cycles
-	const unsigned int CyclesNum = 150; 
-	unsigned int i;
-	for(i = 0; i < CyclesNum; i++) 
-		asm volatile("nop");
+    //according to broadcom documentation we need to wait 150 cycles
+    const unsigned int CyclesNum = 150;
+    unsigned int i;
+    for(i = 0; i < CyclesNum; i++)
+        asm volatile("nop");
 
-    	WriteToRegister(GPPUDCLK0_REG, ((1<<14)|(1<<15)));
-    	for(i = 0; i < CyclesNum; i++) 
-		asm volatile("nop");
+    WriteToRegister(GPPUDCLK0_REG, ((1<<14)|(1<<15)));
+    for(i = 0; i < CyclesNum; i++)
+        asm volatile("nop");
 
-    	WriteToRegister(GPPUDCLK0_REG, 0);
+    WriteToRegister(GPPUDCLK0_REG, 0);
 }
 
 void InitMiniUart()
 {
-	unsigned int auxEnableReg;
-	ReadFromRegister(AUX_ENABLE_REG, &auxEnableReg);
-	auxEnableReg |= 1;
-	WriteToRegister(AUX_ENABLE_REG, auxEnableReg);
-	WriteToRegister(AUX_MU_IER_REG, 0);
-	
-	const unsigned int FifoClearEnable = 0xC6;
-	WriteToRegister(AUX_MU_IIR_REG, FifoClearEnable);
-	
-	const unsigned int eightBitUartMode = 3;
-	WriteToRegister(AUX_MU_LCR_REG, eightBitUartMode);
-	WriteToRegister(AUX_MU_MCR_REG, 0);
-	WriteToRegister(AUX_MU_CNTL_REG, 0);
-	WriteToRegister(AUX_MU_BAUD_REG, 270);
+    unsigned int auxEnableReg;
+    ReadFromRegister(AUX_ENABLE_REG, &auxEnableReg);
+    auxEnableReg |= 1;
+    WriteToRegister(AUX_ENABLE_REG, auxEnableReg);
+    WriteToRegister(AUX_MU_IER_REG, 0);
 
-	SetUpGPIO();
+    const unsigned int FifoClearEnable = 0xC6;
+    WriteToRegister(AUX_MU_IIR_REG, FifoClearEnable);
 
-	const unsigned int ReceiverTransmitterEnable = 0x03;
-	WriteToRegister(AUX_MU_CNTL_REG, ReceiverTransmitterEnable);
+    const unsigned int eightBitUartMode = 3;
+    WriteToRegister(AUX_MU_LCR_REG, eightBitUartMode);
+    WriteToRegister(AUX_MU_MCR_REG, 0);
+    WriteToRegister(AUX_MU_CNTL_REG, 0);
+    WriteToRegister(AUX_MU_BAUD_REG, 270);
+
+    SetUpGPIO();
+
+    const unsigned int ReceiverTransmitterEnable = 0x03;
+    WriteToRegister(AUX_MU_CNTL_REG, ReceiverTransmitterEnable);
 }
 
-char GetChar() 
+char GetChar()
 {
-	const unsigned int DataReadyBit = 0x01;
-    	char r;
-    	do{asm volatile("nop");}while(!(*AUX_MU_LSR_REG & DataReadyBit));
+    const unsigned int DataReadyBit = 0x01;
+    char r;
+    do {
+        asm volatile("nop");
+    }
+    while(!(*AUX_MU_LSR_REG & DataReadyBit));
 
-    	r=(char)(*AUX_MU_IO_REG);
-   	return r=='\r'?'\n':r;
+    r=(char)(*AUX_MU_IO_REG);
+    return r=='\r'?'\n':r;
 }
 
 void PutChar(const char ch)
 {
-	const unsigned int DataReadyBit = 0x20;
-	while (1)
-	{
-		unsigned int lsrRegVal;
-		ReadFromRegister(AUX_MU_LSR_REG, &lsrRegVal);
-		if (lsrRegVal & DataReadyBit)
-			break;
-	}
+    const unsigned int DataReadyBit = 0x20;
+    while (1)
+    {
+        unsigned int lsrRegVal;
+        ReadFromRegister(AUX_MU_LSR_REG, &lsrRegVal);
+        if (lsrRegVal & DataReadyBit)
+            break;
+    }
 
-	WriteToRegister(AUX_MU_IO_REG, (const unsigned int)ch);
+    WriteToRegister(AUX_MU_IO_REG, (const unsigned int)ch);
 }
 
 void PutStr(const char* s)
 {
-	while(*s != '\0')
-	{
-		if (*s == '\n')
-			PutChar('\r');
+    while(*s != '\0')
+    {
+        if (*s == '\n')
+            PutChar('\r');
 
-		PutChar(*s);
-		s++;
-	}
+        PutChar(*s);
+        s++;
+    }
 }
 
 void main(void)
 {
-	InitMiniUart();
+    InitMiniUart();
 
-	PutStr("Hello fucking world!\n");
-	while(1)
-	{
-		PutChar(GetChar());
-	}
+    PutStr("Hello fucking world!\n");
+    while(1)
+    {
+        PutChar(GetChar());
+    }
 }

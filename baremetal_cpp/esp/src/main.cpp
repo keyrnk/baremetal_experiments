@@ -16,9 +16,9 @@ void my_main(void)
     using IOStream = BasicStream<char, std::char_traits<char>, Uart>;
     IOStream cout;
     cout << "\n[ESP8266 C++ version 0.1]\n\n";
-    
+
     TestFunction<IOStream>(cout);
-    
+
     SET_LED_STATUS(GREEN_LED, false);
     SET_LED_STATUS(RED_LED, true);
 

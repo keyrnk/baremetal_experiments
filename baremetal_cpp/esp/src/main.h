@@ -1,5 +1,5 @@
-#ifndef _KARINA_MAIN_H_
-#define _KARINA_MAIN_H_
+#ifndef _ESP8266_MAIN_H_
+#define _ESP8266_MAIN_H_
 
 extern "C" {
     extern unsigned char _bss_start;
@@ -15,4 +15,4 @@ inline static void mem_clr_bss(void)
         *ptr++ = 0;
 }
 
-#endif // _KARINA_MAIN_H_
+#endif // _ESP8266_MAIN_H_

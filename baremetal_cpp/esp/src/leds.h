@@ -1,5 +1,5 @@
-#ifndef _KARINA_LEDS_H_
-#define _KARINA_LEDS_H_
+#ifndef _ESP8266_LEDS_H_
+#define _ESP8266_LEDS_H_
 
 #define PERIPHS_IO_MUX_FUNC   0x13
 #define PERIPHS_IO_MUX_FUNC_S 4
@@ -54,4 +54,4 @@ inline static void init_leds(void)
     GPIO_OUTPUT_MASK_REGISTER = GREEN_LED | RED_LED;
 }
 
-#endif // _KARINA_LEDS_H_
+#endif // _ESP8266_LEDS_H_
