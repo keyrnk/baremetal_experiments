@@ -8,6 +8,6 @@ boot files for raspberrypi3 that should be placed on SD card with compiled kerne
 - docs/  
 boards manuals, hardware documentation
 - mini_uart_io/  
-raspberrypi3 uart implementation, my first steps in bare metal world
+raspberrypi3 uart implementation in C, my first steps in bare metal world
 - unused_experimental_headers/  
 stl parts that still not ported to embedded
