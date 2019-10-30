@@ -45,7 +45,7 @@ continue:
     // cpu id == 0
 /*    msr DAIFClr, #15
 
-    ldr x0,=interrupt_vector
+    ldr sp,=interrupt_vector
     mov x1,#0x0000
     ldp x2, x17, [x0], #128
     stp x2, x17, [x1], #128
