@@ -1,8 +1,8 @@
 ###Cross compiler
 
 Firstly you need to download and install cross compiler
-[Raspberry cross compiler](raspberrypi3_cross_compiler.md)
-[ESP8266 cross compiler](esp8266_cross_compiler.md)
+[Raspberry cross compiler](docs/raspberrypi3_cross_compiler.md)
+[ESP8266 cross compiler](docs/esp8266_cross_compiler.md)
 
 ###ESP connection
 For ESP connection I use TODO: com port model
