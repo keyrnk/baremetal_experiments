@@ -1,6 +1,6 @@
 ### Raspi Make build
-Change cross compiler path in raspi/Makefile to path in your system. 
-From current directory:
+Change cross compiler path in raspi/Makefile to path in your system.   
+From baremetal_cpp/ directory:
  
 ```
 make raspi
