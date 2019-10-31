@@ -1,6 +1,6 @@
 ### Make build
 Change cross compiler path in esp/Makefile to path in your system. 
-From current directory:
+From baremetal_cpp/ directory:
  
 ```
 make esp
