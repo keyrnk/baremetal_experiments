@@ -23,10 +23,6 @@ via https://developer.arm.com/tools-and-software/open-source-software/developer-
 AArch64 ELF bare-metal target (aarch64-elf) and set appropriate include paths in Makefile (see example in repository).  
 It will work. 
 
-TODO: see and remove
-4. std::basic_string<...> is marked as throw()/noexcept
-so if allocator::deallocate calls inside throw-func you'll see compilation error
-undefined reference to __cxa_call_unexpected
 
 
 
