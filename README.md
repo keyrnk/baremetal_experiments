@@ -10,4 +10,4 @@ boards manuals, hardware documentation
 - mini_uart_io/  
 raspberrypi3 uart implementation in C, my first steps in bare metal world
 - unused_experimental_headers/  
-stl parts that still not ported to embedded
+stl parts that are still not ported to embedded
